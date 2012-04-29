@@ -119,66 +119,6 @@ bool noMenuActive()
 MainGameCallback *g_gamecallback = NULL;
 #endif
 
-/*
-	gettime.h implementation
-*/
-
-#ifdef SERVER
-
-u32 getTimeMs()
-{
-	/* Use imprecise system calls directly (from porting.h) */
-	return porting::getTimeMs();
-}
-
-#else
-
-// A small helper class
-class TimeGetter
-{
-public:
-	virtual u32 getTime() = 0;
-};
-
-// A precise irrlicht one
-class IrrlichtTimeGetter: public TimeGetter
-{
-public:
-	IrrlichtTimeGetter(IrrlichtDevice *device):
-		m_device(device)
-	{}
-	u32 getTime()
-	{
-		if(m_device == NULL)
-			return 0;
-		return m_device->getTimer()->getRealTime();
-	}
-private:
-	IrrlichtDevice *m_device;
-};
-// Not so precise one which works without irrlicht
-class SimpleTimeGetter: public TimeGetter
-{
-public:
-	u32 getTime()
-	{
-		return porting::getTimeMs();
-	}
-};
-
-// A pointer to a global instance of the time getter
-// TODO: why?
-TimeGetter *g_timegetter = NULL;
-
-u32 getTimeMs()
-{
-	if(g_timegetter == NULL)
-		return 0;
-	return g_timegetter->getTime();
-}
-
-#endif
-
 class StderrLogOutput: public ILogOutput
 {
 public:

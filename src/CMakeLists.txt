@@ -204,6 +204,8 @@ set(common_SRCS
 	sha1.cpp
 	base64.cpp
 	ban.cpp
+	gettime.cpp
+	main.cpp
 )
 
 # This gives us the icon
@@ -257,13 +259,11 @@ set(minetest_SRCS
 	filecache.cpp
 	tile.cpp
 	game.cpp
-	main.cpp
 )
 
 # Server sources
 set(minetestserver_SRCS
 	${common_SRCS}
-	main.cpp
 )
 
 include_directories(

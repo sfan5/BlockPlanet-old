@@ -51,5 +51,44 @@ inline std::string getTimestamp()
 	return cs;
 }
 
+#ifdef SERVER
+
+u32 getTimeMs();
+
+#else
+
+// A small helper class
+class TimeGetter
+{
+public:
+	virtual u32 getTime() = 0;
+};
+
+// A precise irrlicht one
+class IrrlichtTimeGetter: public TimeGetter
+{
+public:
+	IrrlichtTimeGetter(IrrlichtDevice *device):
+		m_device(device)
+	{}
+	u32 getTime();
+private:
+	IrrlichtDevice *m_device;
+};
+// Not so precise one which works without irrlicht
+class SimpleTimeGetter: public TimeGetter
+{
+public:
+	u32 getTime();
+};
+
+// A pointer to a global instance of the time getter
+// TODO: why?
+TimeGetter *g_timegetter = NULL;
+
+u32 getTimeMs();
+
+#endif
+
 
 #endif
