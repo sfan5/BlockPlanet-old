@@ -117,6 +117,23 @@ bool noMenuActive()
 
 // Passed to menus to allow disconnecting and exiting
 MainGameCallback *g_gamecallback = NULL;
+
+// A pointer to a global instance of the time getter
+// TODO: why?
+TimeGetter *g_timegetter = NULL;
+
+u32 getTimeMs()
+{
+	if(g_timegetter == NULL)
+		return 0;
+	return g_timegetter->getTime();
+}
+#else
+u32 getTimeMs()
+{
+	/* Use imprecise system calls directly (from porting.h) */
+	return porting::getTimeMs();
+}
 #endif
 
 class StderrLogOutput: public ILogOutput

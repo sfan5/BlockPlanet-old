@@ -31,15 +31,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 	gettime.h implementation
 */
 
-#ifdef SERVER
-
-u32 getTimeMs()
-{
-	/* Use imprecise system calls directly (from porting.h) */
-	return porting::getTimeMs();
-}
-
-#else
+#ifndef SERVER
 
 // A precise irrlicht one
 u32 IrrlichtTimeGetter::getTime()
@@ -55,13 +47,6 @@ u32 IrrlichtTimeGetter::getTime()
 u32 SimpleTimeGetter::getTime()
 {
 	return porting::getTimeMs();
-}
-
-u32 getTimeMs()
-{
-	if(g_timegetter == NULL)
-		return 0;
-	return g_timegetter->getTime();
 }
 
 #endif

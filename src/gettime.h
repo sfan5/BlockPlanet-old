@@ -51,11 +51,7 @@ inline std::string getTimestamp()
 	return cs;
 }
 
-#ifdef SERVER
-
-u32 getTimeMs();
-
-#else
+#ifndef SERVER
 
 // A small helper class
 class TimeGetter
@@ -81,12 +77,6 @@ class SimpleTimeGetter: public TimeGetter
 public:
 	u32 getTime();
 };
-
-// A pointer to a global instance of the time getter
-// TODO: why?
-TimeGetter *g_timegetter = NULL;
-
-u32 getTimeMs();
 
 #endif
 
