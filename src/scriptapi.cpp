@@ -4296,7 +4296,7 @@ static const struct luaL_Reg minetest_f [] = {
 	{"log", l_log},
 	{"register_item_raw", l_register_item_raw},
 	{"register_alias_raw", l_register_alias_raw},
-	{"register_craft", l_register_craft},
+	{"register_craft_raw", l_register_craft},
 	{"setting_set", l_setting_set},
 	{"setting_get", l_setting_get},
 	{"setting_getbool", l_setting_getbool},

@@ -1750,7 +1750,7 @@ void the_game(
 				guienv->setFocus(gui_chat_console);
 			}
 		}
-		if(input->wasKeyDown(getKeySetting("keymap_freemove")))
+		/*if(input->wasKeyDown(getKeySetting("keymap_freemove")))
 		{
 			if(g_settings->getBool("free_move"))
 			{
@@ -1766,7 +1766,7 @@ void the_game(
 				if(!client.checkPrivilege("fly"))
 					statustext += L" (note: no 'fly' privilege)";
 			}
-		}
+		}*/
 		if(input->wasKeyDown(getKeySetting("keymap_fastmove")))
 		{
 			if(g_settings->getBool("fast_move"))
@@ -2586,7 +2586,7 @@ void the_game(
 				(daynight_ratio * LIGHT_SUN) / 1000) / 255.0;
 		float direct_brightness = 0;
 		bool sunlight_seen = false;
-		if(g_settings->getBool("free_move")){
+		if(player->is_flying){
 			direct_brightness = time_brightness;
 			sunlight_seen = true;
 		} else {

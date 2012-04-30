@@ -850,6 +850,10 @@ minetest.register_node("default:tree", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
+minetest.register_node_clone("default:tree_white", "default:tree", {
+	tile_images = {"default_tree_top_white.png", "default_tree_top_white.png", "default_tree_white.png"},
+})
+
 minetest.register_node("default:jungletree", {
 	description = "Jungle Tree",
 	tile_images = {"default_jungletree_top.png", "default_jungletree_top.png", "default_jungletree.png"},

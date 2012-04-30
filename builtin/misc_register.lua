@@ -22,6 +22,9 @@ minetest.registered_craftitems = {}
 minetest.registered_tools = {}
 minetest.registered_aliases = {}
 minetest.registered_crafts = {}
+minetest.registered_fuels = {}
+minetest.registered_smeltables = {}
+minetest.registered_clones = {}
 
 -- For tables that are indexed by item name:
 -- If table[X] does not exist, default to table[minetest.registered_aliases[X]]
@@ -152,6 +155,8 @@ end
 
 function minetest.register_node(name, nodedef)
 	nodedef.type = "node"
+	minetest.registered_clones[name] = {}
+	minetest.registered_clones[name][0] = name
 	minetest.register_item(name, nodedef)
 end
 
@@ -165,6 +170,50 @@ function minetest.register_craftitem(name, craftitemdef)
 	-- END Legacy stuff
 
 	minetest.register_item(name, craftitemdef)
+end
+
+function minetest.register_craft(craftdef)
+	local tempcraftdef = craftdef
+	if craftdef.recipe ~= nil and craftdef.output ~= nil then
+		if craftdef.type == "cooking" then
+			if minetest.registered_clones[craftdef.recipe] ~= nil then
+				for i,v in ipairs(minetest.registered_clones[craftdef.recipe]) do
+					tempcraftdef.recipe = v
+					minetest.registered_smeltables[v] = craftdef.output
+					minetest.register_craft_raw(tempcraftdef)
+				end
+			else
+				minetest.registered_smeltables[craftdef.recipe] = craftdef.burntime
+				minetest.register_craft_raw(craftdef)
+			end
+		elseif craftdef.type == "fuel" then
+			if minetest.registered_clones[craftdef.recipe] ~= nil then
+				for i,v in ipairs(minetest.registered_clones[craftdef.recipe]) do
+					tempcraftdef.recipe = v
+					minetest.registered_fuels[v] = craftdef.burntime
+					minetest.register_craft_raw(tempcraftdef)
+				end
+			else
+				minetest.registered_fuels[craftdef.recipe] = craftdef.burntime
+				minetest.register_craft_raw(craftdef)
+			end
+		else
+			for i,v in ipairs(craftdef.recipe) do
+				for x,y in ipairs(v) do
+					if minetest.registered_clones[y] ~= nil then
+						for z,a in ipairs(minetest.registered_clones[y]) do
+							tempcraftdef.recipe[v][y] = a
+							minetest.registered_crafts[tempcraftdef.recipe] = craftdef.output
+							minetest.register_craft_raw(tempcraftdef)
+						end
+					else
+						minetest.registered_crafts[craftdef.recipe] = craftdef.output
+						minetest.register_craft_raw(craftdef)
+					end
+				end
+			end
+		end
+	end
 end
 
 function minetest.register_tool(name, tooldef)
@@ -226,6 +275,16 @@ local name
 for name in pairs(forbidden_item_names) do
 	minetest.registered_aliases[name] = ""
 	register_alias_raw(name, "")
+end
+
+-- Clone a node, changing something
+function minetest.register_node_clone(name, original_name, nodedefs)
+	local newnodedef = minetest.registered_nodes[original_name]
+	for ndn, nd in pairs(nodedefs) do
+		newnodedef[ndn] = nd;
+	end
+	minetest.registered_clones[original_name][table.getn(minetest.registered_clones[original_name])+1] = name
+	minetest.register_node(name, newnodedef)
 end
 
 

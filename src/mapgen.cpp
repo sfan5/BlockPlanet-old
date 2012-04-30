@@ -230,7 +230,16 @@ void make_custom_tree(ManualMapVoxelManipulator &vmanip, v3s16 p0,
 void make_tree(ManualMapVoxelManipulator &vmanip, v3s16 p0,
 		bool is_apple_tree, INodeDefManager *ndef)
 {
-	MapNode treenode(ndef->getId("mapgen_tree"));
+	bool white_tree = myrand_range(0, 5) == 1;
+	MapNode treenode;
+	if (white_tree)
+	{
+		treenode = ndef->getId("mapgen_tree_white");
+	}
+	else
+	{
+		treenode = ndef->getId("mapgen_tree");
+	}
 	MapNode leavesnode(ndef->getId("mapgen_leaves"));
 	MapNode applenode(ndef->getId("mapgen_apple"));
 	mapnoderandom applestruct;
