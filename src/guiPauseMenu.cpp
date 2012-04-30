@@ -1,6 +1,12 @@
 /*
+BlockPlanet
+Copyright (C) 2012 MiJyn, Joel Leclerc <mijyn@mail.com>
+Licensed under GPLv3
+
+
+Based on:
 Minetest-c55
-Copyright (C) 2010 celeron55, Perttu Ahola <celeron55@gmail.com>
+Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -139,7 +145,7 @@ void GUIPauseMenu::regenerateGui(v2u32 screensize)
 		core::rect<s32> rect(0, 0, 140, btn_height);
 		rect = rect + v2s32(size.X/2-140/2, btn_y);
 		Environment->addButton(rect, this, 257,
-			wgettext("Exit Minetest"));
+			wgettext("Exit BlockPlanet"));
 	}
 
 	//{

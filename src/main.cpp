@@ -897,7 +897,7 @@ int main(int argc, char *argv[])
 	while(device->run() && kill == false)
 	{
 		// Set the window caption
-		device->setWindowCaption(L"Minetest [Main Menu]");
+		device->setWindowCaption(L"BlockPlanet [Main Menu]");
 
 		// This is used for catching disconnects
 		try

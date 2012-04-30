@@ -1,4 +1,10 @@
 /*
+BlockPlanet
+Copyright (C) 2012 MiJyn, Joel Leclerc <mijyn@mail.com>
+Licensed under GPLv3
+
+
+Based on:
 Minetest-c55
 Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
@@ -2638,7 +2644,7 @@ void the_game(
 		//TimeTaker guiupdatetimer("Gui updating");
 		
 		const char program_name_and_version[] =
-			"Minetest-c55 " VERSION_STRING;
+			"BlockPlanet " VERSION_STRING;
 
 		if(show_debug)
 		{
