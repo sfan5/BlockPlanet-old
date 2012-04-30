@@ -5,14 +5,14 @@ if(${CMAKE_VERSION} STREQUAL "2.8.2")
 endif(${CMAKE_VERSION} STREQUAL "2.8.2")
 
 # This can be read from ${PROJECT_NAME} after project() is called
-project(minetest)
+project(blockplanet)
 
 set(VERSION_EXTRA "" CACHE STRING "Stuff to append to version string")
 
 # Also remember to set PROTOCOL_VERSION in clientserver.h when releasing
 set(VERSION_MAJOR 0)
-set(VERSION_MINOR 4)
-set(VERSION_PATCH dev-20120408)
+set(VERSION_MINOR 1)
+set(VERSION_PATCH dev-20120430)
 if(VERSION_EXTRA)
 	set(VERSION_PATCH ${VERSION_PATCH}-${VERSION_EXTRA})
 endif()
