@@ -71,6 +71,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "utility_string.h"
 #include "subgame.h"
 #include "quicktune.h"
+#include "speedtests.h"
 
 /*
 	Settings.
@@ -597,104 +598,6 @@ void drawMenuBackground(video::IVideoDriver* driver)
 }
 
 #endif
-
-// These are defined global so that they're not optimized too much.
-// Can't change them to volatile.
-s16 temp16;
-f32 tempf;
-v3f tempv3f1;
-v3f tempv3f2;
-std::string tempstring;
-std::string tempstring2;
-
-void SpeedTests()
-{
-	{
-		infostream<<"The following test should take around 20ms."<<std::endl;
-		TimeTaker timer("Testing std::string speed");
-		const u32 jj = 10000;
-		for(u32 j=0; j<jj; j++)
-		{
-			tempstring = "";
-			tempstring2 = "";
-			const u32 ii = 10;
-			for(u32 i=0; i<ii; i++){
-				tempstring2 += "asd";
-			}
-			for(u32 i=0; i<ii+1; i++){
-				tempstring += "asd";
-				if(tempstring == tempstring2)
-					break;
-			}
-		}
-	}
-	
-	infostream<<"All of the following tests should take around 100ms each."
-			<<std::endl;
-
-	{
-		TimeTaker timer("Testing floating-point conversion speed");
-		tempf = 0.001;
-		for(u32 i=0; i<4000000; i++){
-			temp16 += tempf;
-			tempf += 0.001;
-		}
-	}
-	
-	{
-		TimeTaker timer("Testing floating-point vector speed");
-
-		tempv3f1 = v3f(1,2,3);
-		tempv3f2 = v3f(4,5,6);
-		for(u32 i=0; i<10000000; i++){
-			tempf += tempv3f1.dotProduct(tempv3f2);
-			tempv3f2 += v3f(7,8,9);
-		}
-	}
-
-	{
-		TimeTaker timer("Testing core::map speed");
-		
-		core::map<v2s16, f32> map1;
-		tempf = -324;
-		const s16 ii=300;
-		for(s16 y=0; y<ii; y++){
-			for(s16 x=0; x<ii; x++){
-				map1.insert(v2s16(x,y), tempf);
-				tempf += 1;
-			}
-		}
-		for(s16 y=ii-1; y>=0; y--){
-			for(s16 x=0; x<ii; x++){
-				tempf = map1[v2s16(x,y)];
-			}
-		}
-	}
-
-	{
-		infostream<<"Around 5000/ms should do well here."<<std::endl;
-		TimeTaker timer("Testing mutex speed");
-		
-		JMutex m;
-		m.Init();
-		u32 n = 0;
-		u32 i = 0;
-		do{
-			n += 10000;
-			for(; i<n; i++){
-				m.Lock();
-				m.Unlock();
-			}
-		}
-		// Do at least 10ms
-		while(timer.getTime() < 10);
-
-		u32 dtime = timer.stop();
-		u32 per_ms = n / dtime;
-		infostream<<"Done. "<<dtime<<"ms, "
-				<<per_ms<<"/ms"<<std::endl;
-	}
-}
 
 static void print_worldspecs(const std::vector<WorldSpec> &worldspecs,
 		std::ostream &os)
@@ -1256,7 +1159,9 @@ int main(int argc, char *argv[])
 	if(cmd_args.getFlag("speedtests"))
 	{
 		dstream<<"Running speed tests"<<std::endl;
-		SpeedTests();
+		SpeedTest *st = new SpeedTest();
+		st->SpeedTests();
+		delete(st);
 		return 0;
 	}
 	

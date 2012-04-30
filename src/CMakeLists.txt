@@ -204,6 +204,7 @@ set(common_SRCS
 	sha1.cpp
 	base64.cpp
 	ban.cpp
+	speedtests.cpp
 	gettime.cpp
 	main.cpp
 )
