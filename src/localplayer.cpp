@@ -565,18 +565,15 @@ void LocalPlayer::applyControl(float dtime)
 		}
 		else
 		{
+			//NOTE: The d value in move() affects jump height by
+			//raising the height at which the jump speed is kept
+			//at its starting value
+			if(speed.Y >= -0.5*BS)
 			if(touching_ground)
 			{
-					//NOTE: The d value in move() affects jump height by
-					//raising the height at which the jump speed is kept
-					//at its starting value
-				if(speed.Y >= -0.5*BS)
-				{
-					speed.Y = 6.5*BS;
-					
-					MtEvent *e = new SimpleTriggerEvent("PlayerJump");
-					m_gamedef->event()->put(e);
-				}
+				speed.Y = 6.5*BS;
+				MtEvent *e = new SimpleTriggerEvent("PlayerJump");
+				m_gamedef->event()->put(e);
 			}
 			// Use the oscillating value for getting out of water
 			// (so that the player doesn't fly on the surface)

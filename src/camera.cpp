@@ -375,13 +375,13 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 	updateViewingRange(frametime);
 
 	// If the player seems to be walking on solid ground,
-	// view bobbing is enabled and free_move is off,
+	// view bobbing is enabled and the player is not flying,
 	// start (or continue) the view bobbing animation.
 	v3f speed = player->getSpeed();
 	if ((hypot(speed.X, speed.Z) > BS) &&
 		(player->touching_ground) &&
 		(g_settings->getBool("view_bobbing") == true) &&
-		(g_settings->getBool("free_move") == false ||
+		(!player->is_flying ||
 				!m_gamedef->checkLocalPrivilege("fly")))
 	{
 		// Start animation

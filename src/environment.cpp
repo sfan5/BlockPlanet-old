@@ -1891,8 +1891,8 @@ void ClientEnvironment::step(float dtime)
 	stepTimeOfDay(dtime);
 
 	// Get some settings
-	bool fly_allowed = m_gamedef->checkLocalPrivilege("fly");
-	bool free_move = fly_allowed && g_settings->getBool("free_move");
+	//bool fly_allowed = m_gamedef->checkLocalPrivilege("fly");
+	//bool free_move = fly_allowed && g_settings->getBool("free_move");
 
 	// Get local player
 	LocalPlayer *lplayer = getLocalPlayer();
@@ -1963,7 +1963,7 @@ void ClientEnvironment::step(float dtime)
 			v3f lplayerpos = lplayer->getPosition();
 			
 			// Apply physics
-			if(free_move == false && is_climbing == false)
+			if(!lplayer->is_flying && is_climbing == false)
 			{
 				// Gravity
 				v3f speed = lplayer->getSpeed();

@@ -324,10 +324,11 @@ void ClientMap::renderMap(video::IVideoDriver* driver, s32 pass)
 				Occlusion culling
 			*/
 
-			// No occlusion culling when free_move is on and camera is
+			// No occlusion culling when the player is flying and camera is
 			// inside ground
 			bool occlusion_culling_enabled = true;
-			if(g_settings->getBool("free_move")){
+			LocalPlayer *lplayer = m_client->getEnv().getLocalPlayer();
+			if(lplayer->is_flying){
 				MapNode n = getNodeNoEx(cam_pos_nodes);
 				if(n.getContent() == CONTENT_IGNORE ||
 						nodemgr->get(n).solidness == 2)
@@ -717,7 +718,8 @@ void ClientMap::renderPostFx()
 	// - If the player is in liquid, draw a semi-transparent overlay.
 	const ContentFeatures& features = nodemgr->get(n);
 	video::SColor post_effect_color = features.post_effect_color;
-	if(features.solidness == 2 && g_settings->getBool("free_move") == false)
+	LocalPlayer *lplayer = m_client->getEnv().getLocalPlayer();
+	if(features.solidness == 2 && !lplayer->is_flying)
 	{
 		post_effect_color = video::SColor(255, 0, 0, 0);
 	}
