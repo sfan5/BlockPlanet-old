@@ -47,6 +47,7 @@ Player::Player(IGameDef *gamedef):
 	hurt_tilt_timer(0),
 	hurt_tilt_timer_max(0),
 	enable_sprinting_timer(0),
+	enable_flying_timer(0),
 	hunger(PLAYER_MAX_HUNGER),
 	hunger_timer(0.0),
 	hunger_hurt_heal_timer(0.0),
@@ -98,6 +99,7 @@ void Player::serialize(std::ostream &os)
 	args.setFloat("oxygen_timer", oxygen_timer);
 	args.setFloat("oxygen_hurt_timer", oxygen_hurt_timer);
 	args.setFloat("is_flying", is_flying);
+	args.setFloat("is_sprinting", is_sprinting);
 
 	args.writeLines(os);
 
@@ -150,6 +152,7 @@ void Player::deSerialize(std::istream &is)
 	oxygen_timer = args.getFloat("oxygen_timer");
 	oxygen_hurt_timer = args.getFloat("oxygen_hurt_timer");
 	is_flying = args.getFloat("is_flying");
+	is_sprinting = args.getFloat("is_sprinting");
 
 	inventory.deSerialize(is);
 

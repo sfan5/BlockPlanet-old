@@ -72,8 +72,9 @@ void LocalPlayer::move(f32 dtime, Map &map, f32 pos_max_d,
 	position += m_speed * dtime;
 	
 	// Skip collision detection if a special movement mode is used
-	bool fly_allowed = m_gamedef->checkLocalPrivilege("fly");
-	bool free_move = fly_allowed && g_settings->getBool("free_move");
+	//bool fly_allowed = m_gamedef->checkLocalPrivilege("fly");
+	//bool free_move = fly_allowed && g_settings->getBool("free_move");
+	//bool free_move = fly_allowed && is_flying;
 	//bool fast_allowed = m_gamedef->checkLocalPrivilege("fast");
 	//bool fast_move = fast_allowed && g_settings->getBool("fast_move");
 	//if(free_move)
@@ -138,7 +139,7 @@ void LocalPlayer::move(f32 dtime, Map &map, f32 pos_max_d,
 		is_climbing = false;
 	}
 
-	is_flying = free_move;
+	//is_flying = free_move;
 	//is_sprinting = fast_move;
 
 	/*
@@ -169,7 +170,7 @@ void LocalPlayer::move(f32 dtime, Map &map, f32 pos_max_d,
 		If sneaking, keep in range from the last walked node and don't
 		fall off from it
 	*/
-	if(control.sneak && m_sneak_node_exists)
+	if(control.sneak && m_sneak_node_exists && !is_flying && !is_climbing)
 	{
 		f32 maxd = 0.5*BS + sneak_max;
 		v3f lwn_f = intToFloat(m_sneak_node, BS);
@@ -430,7 +431,7 @@ void LocalPlayer::move(f32 dtime, Map &map, f32 pos_max_d,
 		
 		bool sneak_node_found = (min_distance_f < 100000.0*BS*0.9);
 		
-		if(control.sneak && m_sneak_node_exists)
+		if(control.sneak && m_sneak_node_exists && !is_flying && !is_climbing)
 		{
 			if(sneak_node_found)
 				m_sneak_node = new_sneak_node;
@@ -460,7 +461,7 @@ void LocalPlayer::move(f32 dtime, Map &map, f32 pos_max_d,
 	if(collision_info)
 	{
 		// Report fall collision
-		if(old_speed.Y < m_speed.Y - 0.1 && !standing_on_unloaded && !free_move)
+		if(old_speed.Y < m_speed.Y - 0.1 && !standing_on_unloaded && !is_flying)
 		{
 			CollisionInfo info;
 			info.t = COLLISION_FALL;
@@ -504,14 +505,14 @@ void LocalPlayer::applyControl(float dtime)
 
 	v3f speed = getSpeed();
 
-	bool fly_allowed = m_gamedef->checkLocalPrivilege("fly");
-	bool fast_allowed = m_gamedef->checkLocalPrivilege("fast");
+	//bool fly_allowed = m_gamedef->checkLocalPrivilege("fly");
+	//bool fast_allowed = m_gamedef->checkLocalPrivilege("fast");
 
-	bool free_move = fly_allowed && g_settings->getBool("free_move");
-	bool fast_move = fast_allowed && g_settings->getBool("fast_move");
+	//bool free_move = fly_allowed && g_settings->getBool("free_move");
+	//bool fast_move = fast_allowed && g_settings->getBool("fast_move");
 	bool continuous_forward = g_settings->getBool("continuous_forward");
 
-	if (!in_water || free_move)
+	if (!in_water || is_flying)
 	{
 		speed.X=speed.X*0.85;
 		speed.Z=speed.Z*0.85;
@@ -522,7 +523,7 @@ void LocalPlayer::applyControl(float dtime)
 	if (speed.X<0 && speed.X+0.1>0) {speed.X=0;}
 	if (speed.Z<0 && speed.Z+0.1>0) {speed.Z=0;}
 
-	if (free_move || is_climbing)
+	if (is_flying || is_climbing)
 	{
 		speed.Y=speed.Y*0.85;
 		if (speed.Y<0 && speed.Y+0.1>0) {speed.Y=0;}
@@ -556,35 +557,38 @@ void LocalPlayer::applyControl(float dtime)
 
 	if(control.jump)
 	{
-		if(free_move)
+		if(is_flying)
 		{
 			speed.Y = 10*BS;
-			if (fast_move)
+			if (is_sprinting)
 				speed.Y = 15*BS;
 		}
-		if(touching_ground)
+		else
 		{
-				//NOTE: The d value in move() affects jump height by
-				//raising the height at which the jump speed is kept
-				//at its starting value
-			if(speed.Y >= -0.5*BS)
+			if(touching_ground)
 			{
-				speed.Y = 6.5*BS;
-				
-				MtEvent *e = new SimpleTriggerEvent("PlayerJump");
-				m_gamedef->event()->put(e);
+					//NOTE: The d value in move() affects jump height by
+					//raising the height at which the jump speed is kept
+					//at its starting value
+				if(speed.Y >= -0.5*BS)
+				{
+					speed.Y = 6.5*BS;
+					
+					MtEvent *e = new SimpleTriggerEvent("PlayerJump");
+					m_gamedef->event()->put(e);
+				}
 			}
-		}
-		// Use the oscillating value for getting out of water
-		// (so that the player doesn't fly on the surface)
-		if(in_water)
-		{
-			speed.Y += 0.2*BS;
-			if (speed.Y > 0) speed.Y+=0.2*BS;
-		}
-		if(is_climbing)
-		{
-			speed.Y = 4*BS;
+			// Use the oscillating value for getting out of water
+			// (so that the player doesn't fly on the surface)
+			if(in_water)
+			{
+				speed.Y += 0.2*BS;
+				if (speed.Y > 0) speed.Y+=0.2*BS;
+			}
+			if(is_climbing)
+			{
+				speed.Y = 4*BS;
+			}
 		}
 	}
 
@@ -602,23 +606,23 @@ void LocalPlayer::applyControl(float dtime)
 		}
 	}*/
 
-	if(fast_move&&free_move)
+	if(is_sprinting && is_flying)
 	{
-		speed.X=speed.X*1.1;
-		speed.Z=speed.Z*1.1;
+		speed.X = speed.X*1.1;
+		speed.Z = speed.Z*1.1;
 	}
 
-	if((in_water_stable || in_water) && !free_move)
+	if((in_water_stable || in_water) && !is_flying)
 	{
-		speed.Y=speed.Y*0.95-0.1*BS;
+		speed.Y = speed.Y*0.95-0.1*BS;
 	}
 
 	if(control.sneak)
 	{
-		if(free_move)
+		if(is_flying)
 		{
 			speed.Y = -10*BS;
-			if (fast_move)
+			if (is_sprinting)
 			{
 				speed.Y = -15*BS;
 			}

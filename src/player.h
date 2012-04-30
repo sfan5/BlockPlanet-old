@@ -167,6 +167,8 @@ public:
 
 	float enable_sprinting_timer;
 
+	float enable_flying_timer;
+
 	u16 hunger;
 
 	f32 hunger_timer;

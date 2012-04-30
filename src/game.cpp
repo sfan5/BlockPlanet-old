@@ -1651,6 +1651,28 @@ void the_game(
 				player->enable_sprinting_timer = 0.2;
 			}
 		}
+		if(input->isKeyDown(getKeySetting("keymap_jump")))
+		{
+			if(player->enable_flying_timer > 0)
+			{
+				if (player->is_flying)
+				{
+					player->is_flying = false;
+				}
+				else
+				{
+					player->is_flying = true;
+				}
+			}
+			player->enable_flying_timer = -1;
+		}
+		else
+		{
+			if (player->enable_flying_timer == -1)
+			{
+				player->enable_flying_timer = 0.2;
+			}
+		}
 		if(input->wasKeyDown(getKeySetting("keymap_drop")))
 		{
 			// drop selected item
@@ -2968,6 +2990,14 @@ void the_game(
 		if(player->enable_sprinting_timer > 0.0)
 		{
 			player->enable_sprinting_timer -= dtime;
+		}
+		
+		/*
+			Time that has to pass between key_jump presses to enable flying
+		*/
+		if(player->enable_flying_timer > 0.0)
+		{
+			player->enable_flying_timer -= dtime;
 		}
 
 
