@@ -1,4 +1,12 @@
 /*
+BlockPlanet
+Copyright (C) 2012 MiJyn, Joel Leclerc <mijyn@mail.com>
+Contributors:
+Jeija
+Licensed under GPLv3
+
+
+Based on:
 Minetest-c55
 Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
@@ -156,6 +164,8 @@ public:
 	float hurt_tilt_timer;
 
 	float hurt_tilt_timer_max;
+
+	float enable_sprinting_timer;
 
 	u16 hunger;
 

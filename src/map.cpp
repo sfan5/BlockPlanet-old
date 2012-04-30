@@ -1,4 +1,12 @@
 /*
+BlockPlanet
+Copyright (C) 2012 MiJyn, Joel Leclerc <mijyn@mail.com>
+Contributors:
+Jeija
+Licensed under GPLv3
+
+
+Based on:
 Minetest-c55
 Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
@@ -2274,7 +2282,7 @@ MapBlock* ServerMap::finishBlockMake(mapgen::BlockMakeData *data,
 				y<=blockpos_max.Y+extra_borders.Y; y++)
 		{
 			v3s16 p(x, y, z);
-			getBlockNoCreateNoEx(p)->setLightingExpired(true);
+			getBlockNoCreateNoEx(p)->setLightingExpired(false);
 		}
 
 #if 0

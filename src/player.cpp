@@ -1,4 +1,12 @@
 /*
+BlockPlanet
+Copyright (C) 2012 MiJyn, Joel Leclerc <mijyn@mail.com>
+Contributors:
+Jeija
+Licensed under GPLv3
+
+
+Based on:
 Minetest-c55
 Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
@@ -36,6 +44,9 @@ Player::Player(IGameDef *gamedef):
 	camera_barely_in_ceiling(false),
 	inventory(gamedef->idef()),
 	hp(PLAYER_MAX_HP),
+	hurt_tilt_timer(0),
+	hurt_tilt_timer_max(0),
+	enable_sprinting_timer(0),
 	hunger(PLAYER_MAX_HUNGER),
 	hunger_timer(0.0),
 	hunger_hurt_heal_timer(0.0),

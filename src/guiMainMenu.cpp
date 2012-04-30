@@ -1,6 +1,15 @@
 /*
+BlockPlanet
+Copyright (C) 2012 MiJyn, Joel Leclerc <mijyn@mail.com>
+Contributors:
+Sfan5
+Jeija
+Licensed under GPLv3
+
+
+Based on:
 Minetest-c55
-Copyright (C) 2010-12 celeron55, Perttu Ahola <celeron55@gmail.com>
+Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -608,10 +617,13 @@ void GUIMainMenu::regenerateGui(v2u32 screensize)
 			"\n"
 			"By:\n"
 			"Perttu Ahola <celeron55@gmail.com>\n"
-			"Joel Leclerc <lkjoel@ubuntu.com>\n"
+			"Joel Leclerc (MiJyn) <mijyn@mail.com>\n"
 			"Jordan Craige <jordan4girl3@gmail.com>\n"
+			"sfan5 <sfan5@live.de>\n"
+			"Jeija <norrepli@gmail.com>\n"
+			"\n"
 			"For a full list of contributors go here:\n"
-			"http://minetestpp.tk/contributors/"
+			"http://www.blockpla.net/contributors/"
 			).c_str(), rect, false, true, this, -1);
 		}
 	}

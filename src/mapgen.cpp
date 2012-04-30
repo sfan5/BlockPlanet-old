@@ -1,4 +1,12 @@
 /*
+BlockPlanet
+Copyright (C) 2012 MiJyn, Joel Leclerc <mijyn@mail.com>
+Contributors:
+Jeija
+Licensed under GPLv3
+
+
+Based on:
 Minetest-c55
 Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
@@ -1968,7 +1976,7 @@ void make_block(BlockMakeData *data)
 	}
 	}
 
-#if 1
+#if 0
 	{
 	// 340ms @cs=8
 	TimeTaker timer1("flow mud");

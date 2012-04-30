@@ -1402,8 +1402,8 @@ void the_game(
 	u32 lasttime = device->getTimer()->getTime();
 
 	LocalPlayer* player = client.getEnv().getLocalPlayer();
-	player->hurt_tilt_timer=0;
-	player->hurt_tilt_timer_max=0;
+	/*player->hurt_tilt_timer=0;
+	player->hurt_tilt_timer_max=0;*/
 
 	for(;;)
 	{
@@ -1632,6 +1632,25 @@ void the_game(
 		/*
 			Launch menus and trigger stuff according to keys
 		*/
+		if(input->isKeyDown(getKeySetting("keymap_forward")))
+		{
+			if(player->enable_sprinting_timer > 0)
+			{
+				player->is_sprinting = true;
+			}
+			player->enable_sprinting_timer = -1;
+		}
+		else
+		{
+			if (player->is_sprinting)
+			{
+				player->is_sprinting = false;
+			}
+			if (player->enable_sprinting_timer == -1)
+			{
+				player->enable_sprinting_timer = 0.2;
+			}
+		}
 		if(input->wasKeyDown(getKeySetting("keymap_drop")))
 		{
 			// drop selected item
@@ -1642,7 +1661,7 @@ void the_game(
 			a->from_i = client.getPlayerItem();
 			client.inventoryAction(a);
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_inventory")))
+		if(input->wasKeyDown(getKeySetting("keymap_inventory")))
 		{
 			infostream<<"the_game: "
 					<<"Launching inventory"<<std::endl;
@@ -1670,7 +1689,7 @@ void the_game(
 
 			menu->drop();
 		}
-		else if(input->wasKeyDown(EscapeKey))
+		if(input->wasKeyDown(EscapeKey))
 		{
 			infostream<<"the_game: "
 					<<"Launching pause menu"<<std::endl;
@@ -1684,7 +1703,7 @@ void the_game(
 			else
 				input->setMousePos(displaycenter.X, displaycenter.Y+25);
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_chat")))
+		if(input->wasKeyDown(getKeySetting("keymap_chat")))
 		{
 			TextDest *dest = new TextDestChat(&client);
 
@@ -1692,7 +1711,7 @@ void the_game(
 					&g_menumgr, dest,
 					L""))->drop();
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_cmd")))
+		if(input->wasKeyDown(getKeySetting("keymap_cmd")))
 		{
 			TextDest *dest = new TextDestChat(&client);
 
@@ -1700,7 +1719,7 @@ void the_game(
 					&g_menumgr, dest,
 					L"/"))->drop();
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_console")))
+		if(input->wasKeyDown(getKeySetting("keymap_console")))
 		{
 			if (!gui_chat_console->isOpenInhibited())
 			{
@@ -1709,7 +1728,7 @@ void the_game(
 				guienv->setFocus(gui_chat_console);
 			}
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_freemove")))
+		if(input->wasKeyDown(getKeySetting("keymap_freemove")))
 		{
 			if(g_settings->getBool("free_move"))
 			{
@@ -1726,7 +1745,7 @@ void the_game(
 					statustext += L" (note: no 'fly' privilege)";
 			}
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_fastmove")))
+		if(input->wasKeyDown(getKeySetting("keymap_fastmove")))
 		{
 			if(g_settings->getBool("fast_move"))
 			{
@@ -1743,7 +1762,7 @@ void the_game(
 					statustext += L" (note: no 'fast' privilege)";
 			}
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_screenshot")))
+		if(input->wasKeyDown(getKeySetting("keymap_screenshot")))
 		{
 			irr::video::IImage* const image = driver->createScreenShot(); 
 			if (image) { 
@@ -1763,7 +1782,7 @@ void the_game(
 				image->drop(); 
 			}			 
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_toggle_hud")))
+		if(input->wasKeyDown(getKeySetting("keymap_toggle_hud")))
 		{
 			show_hud = !show_hud;
 			if(show_hud)
@@ -1772,7 +1791,7 @@ void the_game(
 				statustext = L"HUD hidden";
 			statustext_time = 0;
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_toggle_chat")))
+		if(input->wasKeyDown(getKeySetting("keymap_toggle_chat")))
 		{
 			show_chat = !show_chat;
 			if(show_chat)
@@ -1781,7 +1800,7 @@ void the_game(
 				statustext = L"Chat hidden";
 			statustext_time = 0;
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_toggle_force_fog_off")))
+		if(input->wasKeyDown(getKeySetting("keymap_toggle_force_fog_off")))
 		{
 			force_fog_off = !force_fog_off;
 			if(force_fog_off)
@@ -1790,7 +1809,7 @@ void the_game(
 				statustext = L"Fog enabled";
 			statustext_time = 0;
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_toggle_update_camera")))
+		if(input->wasKeyDown(getKeySetting("keymap_toggle_update_camera")))
 		{
 			disable_camera_update = !disable_camera_update;
 			if(disable_camera_update)
@@ -1799,7 +1818,7 @@ void the_game(
 				statustext = L"Camera update enabled";
 			statustext_time = 0;
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_toggle_debug")))
+		if(input->wasKeyDown(getKeySetting("keymap_toggle_debug")))
 		{
 			// Initial / 3x toggle: Chat only
 			// 1x toggle: Debug text with chat
@@ -1825,7 +1844,7 @@ void the_game(
 				statustext_time = 0;
 			}
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_toggle_profiler")))
+		if(input->wasKeyDown(getKeySetting("keymap_toggle_profiler")))
 		{
 			show_profiler = (show_profiler + 1) % (show_profiler_max + 1);
 
@@ -1847,7 +1866,7 @@ void the_game(
 				statustext_time = 0;
 			}
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_increase_viewing_range_min")))
+		if(input->wasKeyDown(getKeySetting("keymap_increase_viewing_range_min")))
 		{
 			s16 range = g_settings->getS16("viewing_range_nodes_min");
 			s16 range_new = range + 10;
@@ -1857,7 +1876,7 @@ void the_game(
 					+ itos(range_new));
 			statustext_time = 0;
 		}
-		else if(input->wasKeyDown(getKeySetting("keymap_decrease_viewing_range_min")))
+		if(input->wasKeyDown(getKeySetting("keymap_decrease_viewing_range_min")))
 		{
 			s16 range = g_settings->getS16("viewing_range_nodes_min");
 			s16 range_new = range - 10;
@@ -2106,7 +2125,7 @@ void the_game(
 					chat_backend.addMessage(L"", L"You died.");
 
 					/* Handle visualization */
-					LocalPlayer* player = client.getEnv().getLocalPlayer();
+					//LocalPlayer* player = client.getEnv().getLocalPlayer();
 					player->hurt_tilt_timer = 0;
 					player->hurt_tilt_timer_max = 0;
 
@@ -2937,7 +2956,18 @@ void the_game(
 		{
 			player->hurt_tilt_timer -= dtime*5;
 			if(player->hurt_tilt_timer < 0.0)
+			{
 				player->hurt_tilt_timer_max = 0;
+				player->hurt_tilt_timer = 0;
+			}
+		}
+		
+		/*
+			Time that has to pass between key_forward presses to enable sprinting
+		*/
+		if(player->enable_sprinting_timer > 0.0)
+		{
+			player->enable_sprinting_timer -= dtime;
 		}
 
 
