@@ -589,14 +589,8 @@ void LocalPlayer::applyControl(float dtime)
 	}
 
 	// Auxiliary button 1 (E)
-	if(control.aux1)
+	/*if(control.aux1)
 	{
-		if(free_move)
-		{
-			speed.Y = -10*BS;
-			if (fast_move)
-				speed.Y = -15*BS;
-		}
 		if(is_climbing)
 		{
 			speed.Y = -3*BS;
@@ -606,7 +600,7 @@ void LocalPlayer::applyControl(float dtime)
 			speed.X=speed.X*1.11;
 			speed.Z=speed.Z*1.11;
 		}
-	}
+	}*/
 
 	if(fast_move&&free_move)
 	{
@@ -621,8 +615,23 @@ void LocalPlayer::applyControl(float dtime)
 
 	if(control.sneak)
 	{
-		speed.X = speed.X / 1.5;
-		speed.Z = speed.Z / 1.5;
+		if(free_move)
+		{
+			speed.Y = -10*BS;
+			if (fast_move)
+			{
+				speed.Y = -15*BS;
+			}
+		}
+		else if(is_climbing)
+		{
+			speed.Y = -3*BS;
+		}
+		else
+		{
+			speed.X = speed.X / 1.5;
+			speed.Z = speed.Z / 1.5;
+		}
 	}
 	
 

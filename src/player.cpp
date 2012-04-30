@@ -97,6 +97,7 @@ void Player::serialize(std::ostream &os)
 	args.setS32("oxygen", oxygen);
 	args.setFloat("oxygen_timer", oxygen_timer);
 	args.setFloat("oxygen_hurt_timer", oxygen_hurt_timer);
+	args.setFloat("is_flying", is_flying);
 
 	args.writeLines(os);
 
@@ -148,6 +149,7 @@ void Player::deSerialize(std::istream &is)
 	exhaustion = args.getFloat("exhaustion");
 	oxygen_timer = args.getFloat("oxygen_timer");
 	oxygen_hurt_timer = args.getFloat("oxygen_hurt_timer");
+	is_flying = args.getFloat("is_flying");
 
 	inventory.deSerialize(is);
 
