@@ -74,6 +74,7 @@ prints()
 	else
 		printf $Start$2$Sep$3$Sep$4$End"$1"$Start$End
 	fi
+	echo
 }
 
 # Prints an error message
@@ -85,7 +86,7 @@ prints()
 # printe "Error displaying Hello World"
 printe()
 {
-	prints "$@" $Normal $Red &>2
+	prints "$@" $Bold $Red >&2
 }
 
 # Prints a message using grammar

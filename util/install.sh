@@ -45,19 +45,19 @@ do
 		h) usage;;
 		v) version;;
 		t) TARGET=`readlink -f $OPTARG`;NOTARGET=0;;
-		\?) echo "Invalid option: $OPTARG"; usage 1;;
-		:) echo "Option requires an argument: $OPTARG"; usage 1;;
+		\?) printe "Invalid option: $OPTARG"; usage 1;;
+		:) printe "Option requires an argument: $OPTARG"; usage 1;;
 	esac
 done
 
 if [ $NOTARGET -eq 1 ]
 then
-	echo "FATAL: No target specified"
+	printe "FATAL: No target specified"
 	usage 1
 fi
 if [ -e $TARGET ]
 then
-	echo "FATAL: Target already exists"
+	printe "FATAL: Target already exists"
 	exit 1
 fi
 
