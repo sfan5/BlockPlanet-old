@@ -2125,6 +2125,10 @@ void the_game(
 					camera_yaw = event.player_force_move.yaw;
 					camera_pitch = event.player_force_move.pitch;
 				}
+				else if(event.type == CE_KICKED)
+				{
+					g_gamecallback->disconnect();
+				}
 				else if(event.type == CE_DEATHSCREEN)
 				{
 					if(respawn_menu_active)

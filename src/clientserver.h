@@ -316,6 +316,11 @@ enum ToClientCommand
 		u16 command
 		u8 oxygen
 	*/
+
+	TOCLIENT_KICK = 0x44,
+	/*
+		u16 command
+	*/
 };
 
 enum ToServerCommand

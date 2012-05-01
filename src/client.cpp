@@ -1378,6 +1378,12 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 		u8 oxygen = readU8(is);
 		player->oxygen = oxygen;
 	}
+	else if(command == TOCLIENT_KICK)
+	{
+		ClientEvent event;
+		event.type = CE_KICKED;
+		m_client_event_queue.push_back(event);
+	}
 	else if(command == TOCLIENT_MOVE_PLAYER)
 	{
 		std::string datastring((char*)&data[2], datasize-2);

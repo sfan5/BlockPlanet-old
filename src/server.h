@@ -558,6 +558,7 @@ public:
 	std::string getWorldPath(){ return m_path_world; }
 
 	bool isSingleplayer(){ return m_simple_singleplayer_mode; }
+	void SendPlayerKick(u16 peer_id);
 
 	void setAsyncFatalError(const std::string &error)
 	{
@@ -579,6 +580,7 @@ private:
 	static void SendHP(con::Connection &con, u16 peer_id, u8 hp);
 	static void SendHunger(con::Connection &con, u16 peer_id, u8 hunger);
 	static void SendOxygen(con::Connection &con, u16 peer_id, u8 oxygen);
+	static void SendKick(con::Connection &con, u16 peer_id);
 	static void SendAccessDenied(con::Connection &con, u16 peer_id,
 			const std::wstring &reason);
 	static void SendDeathscreen(con::Connection &con, u16 peer_id,

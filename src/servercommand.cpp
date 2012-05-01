@@ -79,6 +79,33 @@ void cmd_shutdown(std::wostringstream &os,
 	ctx->flags |= SEND_TO_OTHERS;
 }
 
+void cmd_kick(std::wostringstream &os, ServerCommandContext *ctx)
+{
+	if(!ctx->server->checkPriv(ctx->player->getName(), "basic_privs") &&
+		!ctx->server->checkPriv(ctx->player->getName(), "privs"))
+	{
+		os<<L"-!- You don't have permission to do that";
+		return;
+	}
+	if(ctx->parms.size() < 2)
+	{
+		os<<L"-!- Usage: /kick [playername]";
+	}
+	else
+	{
+		Player *player = ctx->env->getPlayer(wide_to_narrow(ctx->parms[1]).c_str());
+		if(player == NULL)
+		{
+			os<<L"-!- Invalid player: "<<player->getName();
+		}
+		else
+		{
+			ctx->server->SendPlayerKick(player->peer_id);
+			os<<L"-!- Kicked "<<player->getName();
+		}
+	}
+}
+
 void cmd_banunban(std::wostringstream &os, ServerCommandContext *ctx)
 {
 	if(!ctx->server->checkPriv(ctx->player->getName(), "ban"))
@@ -99,7 +126,7 @@ void cmd_banunban(std::wostringstream &os, ServerCommandContext *ctx)
 
 		if(player == NULL)
 		{
-			os<<L"-!- No such player";
+			os<<L"-!- Invalid player: "<<player->getName();
 			return;
 		}
 		
@@ -171,6 +198,8 @@ std::wstring processServerCommand(ServerCommandContext *ctx)
 		cmd_time(os, ctx);
 	else if(ctx->parms[0] == L"shutdown")
 		cmd_shutdown(os, ctx);
+	else if(ctx->parms[0] == L"kick")
+		cmd_kick(os, ctx);
 	else if(ctx->parms[0] == L"ban" || ctx->parms[0] == L"unban")
 		cmd_banunban(os, ctx);
 	else if(ctx->parms[0] == L"me")
