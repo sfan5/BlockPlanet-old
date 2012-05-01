@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "guiDeathScreen.h"
+#include "guiMessage.h"
 #include "debug.h"
 #include "serialization.h"
 #include <string>
@@ -33,28 +33,24 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <IGUIStaticText.h>
 #include <IGUIFont.h>
 #include "gettext.h"
-#include "client.h"
 
-GUIDeathScreen::GUIDeathScreen(gui::IGUIEnvironment* env,
+GUIMessage::GUIMessage(gui::IGUIEnvironment* env,
 		gui::IGUIElement* parent, s32 id,
-		IGameCallback *gamecallback,
-		IMenuManager *menumgr, IRespawnInitiator *respawner
-):
-	GUIModalMenu(env, parent, id, menumgr),
-	m_respawner(respawner),
-	m_gamecallback(gamecallback),
-	m_screensize(1,1)
+		IMenuManager *menumgr, std::string text
+	):
+	GUIModalMenu(env, parent, id, menumgr, false),
+	m_screensize(1,1),
+	m_text(text)
 {
+	allowFocusRemoval(true);
 }
 
-GUIDeathScreen::~GUIDeathScreen()
+GUIMessage::~GUIMessage()
 {
 	removeChildren();
-	delete m_respawner;
-	delete m_gamecallback;
 }
 
-void GUIDeathScreen::removeChildren()
+void GUIMessage::removeChildren()
 {
 	const core::list<gui::IGUIElement*> &children = getChildren();
 	core::list<gui::IGUIElement*> children_copy;
@@ -71,7 +67,7 @@ void GUIDeathScreen::removeChildren()
 	}
 }
 
-void GUIDeathScreen::regenerateGui(v2u32 screensize)
+void GUIMessage::regenerateGui(v2u32 screensize)
 {
 	m_screensize = screensize;
 
@@ -84,10 +80,10 @@ void GUIDeathScreen::regenerateGui(v2u32 screensize)
 		Calculate new sizes and positions
 	*/
 	core::rect<s32> rect(
-			screensize.X/2 - 500/2,
-			screensize.Y/2 - 200/2,
-			screensize.X/2 + 500/2,
-			screensize.Y/2 + 200/2
+			screensize.X - screensize.X/4,
+			0,
+			screensize.X,
+			screensize.Y/4
 	);
 	
 	DesiredRect = rect;
@@ -105,42 +101,24 @@ void GUIDeathScreen::regenerateGui(v2u32 screensize)
 	*/
 	changeCtype("");
 	{
-		core::rect<s32> rect(0, 0, 400, 50);
+		core::rect<s32> rect(0, 0, size.X, size.Y);
 		rect = rect + v2s32(size.X/2-400/2, size.Y/2-50/2-25);
 		gui::IGUIStaticText *e = 
-		Environment->addStaticText(wgettext("You died."), rect, false,
+		Environment->addStaticText(wgettext(m_text.c_str()), rect, false,
 				true, this, 256);
 		e->setTextAlignment(gui::EGUIA_CENTER, gui::EGUIA_CENTER);
-	}
-	{
-		core::rect<s32> rect(0, 0, btn_width, btn_height);
-		rect = rect + v2s32(size.X/2-btn_gap_hor/2-btn_width, size.Y/2-btn_height/2+25);
-		gui::IGUIElement *e = 
-		Environment->addButton(rect, this, 257,
-			wgettext("Respawn"));
-		Environment->setFocus(e);
-	}
-	{
-		core::rect<s32> rect(0, 0, btn_width, btn_height);
-		rect = rect + v2s32(size.X/2+btn_gap_hor/2, size.Y/2-btn_height/2+25);
-		Environment->addButton(rect, this, 258,
-			wgettext("Exit to Menu"));
 	}
 	changeCtype("C");
 }
 
-void GUIDeathScreen::drawMenu()
+void GUIMessage::drawMenu()
 {
 	gui::IGUISkin* skin = Environment->getSkin();
 	if (!skin)
-		return;
-	video::IVideoDriver* driver = Environment->getVideoDriver();
-	
 	{
-		video::SColor color(180,50,0,0);
-		driver->draw2DRectangle(color,
-				core::rect<s32>(0,0,m_screensize.X,m_screensize.Y), NULL);
+		return;
 	}
+	video::IVideoDriver* driver = Environment->getVideoDriver();
 	{
 		video::SColor bgcolor(50,0,0,0);
 		driver->draw2DRectangle(bgcolor, AbsoluteRect, &AbsoluteClippingRect);
@@ -149,24 +127,9 @@ void GUIDeathScreen::drawMenu()
 	gui::IGUIElement::draw();
 }
 
-bool GUIDeathScreen::OnEvent(const SEvent& event)
+bool GUIMessage::OnEvent(const SEvent& event)
 {
-	if(event.EventType==EET_KEY_INPUT_EVENT)
-	{
-		if(event.KeyInput.Key==KEY_ESCAPE && event.KeyInput.PressedDown)
-		{
-			respawn();
-			quitMenu();
-			return true;
-		}
-		if(event.KeyInput.Key==KEY_RETURN && event.KeyInput.PressedDown)
-		{
-			respawn();
-			quitMenu();
-			return true;
-		}
-	}
-	if(event.EventType==EET_GUI_EVENT)
+	/*if(event.EventType==EET_GUI_EVENT)
 	{
 		if(event.GUIEvent.EventType==gui::EGET_ELEMENT_FOCUS_LOST
 				&& isVisible())
@@ -195,11 +158,7 @@ bool GUIDeathScreen::OnEvent(const SEvent& event)
 		}
 	}
 
-	return Parent ? Parent->OnEvent(event) : false;
-}
-
-void GUIDeathScreen::respawn()
-{
-	m_respawner->respawn();
+	return Parent ? Parent->OnEvent(event) : false;*/
+	return false;
 }
 

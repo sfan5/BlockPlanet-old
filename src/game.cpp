@@ -37,6 +37,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "guiInventoryMenu.h"
 #include "guiTextInputMenu.h"
 #include "guiDeathScreen.h"
+#include "guiMessage.h"
 #include "tool.h"
 #include "guiChatConsole.h"
 #include "config.h"
@@ -2127,6 +2128,10 @@ void the_game(
 				}
 				else if(event.type == CE_KICKED)
 				{
+					/*GUIMessage *message =
+						new GUIMessage(guienv, guiroot, -1, &g_menumgr,
+						"You were kicked!");
+					message->drop();*/
 					g_gamecallback->disconnect();
 				}
 				else if(event.type == CE_DEATHSCREEN)

@@ -23,19 +23,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef MODALMENU_HEADER
-#define MODALMENU_HEADER
+#ifndef MENU_HEADER
+#define MENU_HEADER
 
 #include "common_irrlicht.h"
 
-class GUIModalMenu;
+class GUIMenu;
 
-class IMenuManager
+class INonModalMenuManager
 {
 public:
-	// A GUIModalMenu calls these when this class is passed as a parameter
-	virtual void createdMenu(GUIModalMenu *menu) = 0;
-	virtual void deletingMenu(GUIModalMenu *menu) = 0;
+	// A GUIMenu calls these when this class is passed as a parameter
+	virtual void createdMenu(GUIMenu *menu) = 0;
+	virtual void deletingMenu(GUIMenu *menu) = 0;
 };
 
 /*
@@ -43,18 +43,14 @@ public:
 	remove itself when it wants to.
 */
 
-class GUIModalMenu : public gui::IGUIElement
+class GUIMenu : public gui::IGUIElement
 {
 public:
-	GUIModalMenu(gui::IGUIEnvironment* env,
+	GUIMenu(gui::IGUIEnvironment* env,
 			gui::IGUIElement* parent, s32 id,
-			IMenuManager *menumgr);
+			INonModalMenuManager *menumgr);
 
-	GUIModalMenu(gui::IGUIEnvironment* env,
-			gui::IGUIElement* parent, s32 id,
-			IMenuManager *menumgr, bool modal);
-
-	virtual ~GUIModalMenu();
+	virtual ~GUIMenu();
 
 	void allowFocusRemoval(bool allow);
 
@@ -80,7 +76,7 @@ protected:
 	//bool m_force_regenerate_gui;
 	v2u32 m_screensize_old;
 private:
-	IMenuManager *m_menumgr;
+	INonModalMenuManager *m_menumgr;
 	// This might be necessary to expose to the implementation if it
 	// wants to launch other menus
 	bool m_allow_focus_removal;

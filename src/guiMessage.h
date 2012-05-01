@@ -23,30 +23,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef GUIMESSAGEMENU_HEADER
-#define GUIMESSAGEMENU_HEADER
+#ifndef GUIMESSAGE_HEADER
+#define GUIMESSAGE_HEADER
 
 #include "common_irrlicht.h"
 #include "modalMenu.h"
 #include "utility.h"
 #include <string>
-#include "guiPauseMenu.h"
+//#include "guiPauseMenu.h"
 
-class IRespawnInitiator
+class GUIMessage : public GUIModalMenu
 {
 public:
-	virtual void respawn() = 0;
-	virtual ~IRespawnInitiator() {};
-};
-
-class GUIDeathScreen : public GUIModalMenu
-{
-public:
-	GUIDeathScreen(gui::IGUIEnvironment* env,
-			gui::IGUIElement* parent, s32 id,
-			IGameCallback *gamecallback,
-			IMenuManager *menumgr, IRespawnInitiator *respawner);
-	~GUIDeathScreen();
+	GUIMessage(gui::IGUIEnvironment* env,
+		gui::IGUIElement* parent, s32 id,
+		IMenuManager *menumgr, std::string text);
+	~GUIMessage();
 	
 	void removeChildren();
 	/*
@@ -61,10 +53,8 @@ public:
 	void respawn();
 
 private:
-	IRespawnInitiator *m_respawner;
-	IGameCallback *m_gamecallback;
 	v2u32 m_screensize;
+	std::string m_text;
 };
 
 #endif
-

@@ -246,8 +246,11 @@ set(minetest_SRCS
 	clouds.cpp
 	clientobject.cpp
 	chat.cpp
+	modalMenu.cpp
+	nonmodalMenu.cpp
 	guiMainMenu.cpp
 	guiKeyChangeMenu.cpp
+	guiMessage.cpp
 	guiMessageMenu.cpp
 	guiTextInputMenu.cpp
 	guiInventoryMenu.cpp
