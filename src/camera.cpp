@@ -147,9 +147,13 @@ void Camera::step(f32 dtime)
 #if 0
 			// Animation is getting turned off
 			if (m_view_bobbing_anim < 0.5)
+			{
 				m_view_bobbing_anim -= offset;
+			}
 			else
+			{
 				m_view_bobbing_anim += offset;
+			}
 			if (m_view_bobbing_anim <= 0 || m_view_bobbing_anim >= 1)
 			{
 				m_view_bobbing_anim = 0;
@@ -158,15 +162,24 @@ void Camera::step(f32 dtime)
 #endif
 #if 1
 			// Animation is getting turned off
-			if(m_view_bobbing_anim < 0.25){
+			if(m_view_bobbing_anim < 0.25)
+			{
 				m_view_bobbing_anim -= offset;
-			} else if(m_view_bobbing_anim > 0.75){
+			}
+			else if(m_view_bobbing_anim > 0.75)
+			{
 				m_view_bobbing_anim += offset;
-			} if(m_view_bobbing_anim < 0.5){
+			}
+			if(m_view_bobbing_anim < 0.5)
+			{
 				m_view_bobbing_anim += offset;
 				if(m_view_bobbing_anim > 0.5)
+				{
 					m_view_bobbing_anim = 0.5;
-			} else {
+				}
+			}
+			else
+			{
 				m_view_bobbing_anim -= offset;
 				if(m_view_bobbing_anim < 0.5)
 					m_view_bobbing_anim = 0.5;
@@ -186,7 +199,8 @@ void Camera::step(f32 dtime)
 			bool step = (was == 0 ||
 					(was < 0.5f && m_view_bobbing_anim >= 0.5f) ||
 					(was > 0.5f && m_view_bobbing_anim <= 0.5f));
-			if(step){
+			if(step)
+			{
 				MtEvent *e = new SimpleTriggerEvent("ViewBobbingStep");
 				m_gamedef->event()->put(e);
 			}
@@ -386,7 +400,8 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 	{
 		// Start animation
 		m_view_bobbing_state = 1;
-		m_view_bobbing_speed = MYMIN(speed.getLength(), 40);
+		//m_view_bobbing_speed = MYMIN(speed.getLength(), 40);
+		m_view_bobbing_speed = speed.getLength()*0.7;
 	}
 	else if (m_view_bobbing_state == 1)
 	{

@@ -12,8 +12,6 @@ tags
 !/games/minetest/
 !/games/minimal/
 /cache/
-/textures/
-/sounds/
 /mods/*
 !/mods/minetest/
 /mods/minetest/*

@@ -1178,16 +1178,16 @@ minetest.register_node("default:chest_locked", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
-minetest.register_node("default:furnace", {
+minetest.register_entity("default:furnace", {
 	description = "Furnace",
-	tile_images = {"default_furnace_side.png", "default_furnace_side.png", "default_furnace_side.png",
+	textures = {"default_furnace_side.png", "default_furnace_side.png", "default_furnace_side.png",
 		"default_furnace_side.png", "default_furnace_side.png", "default_furnace_front.png"},
 	paramtype2 = "facedir",
 	metadata_name = "furnace",
 	groups = {cracky=2},
 	legacy_facedir_simple = true,
 	sounds = default.node_sound_stone_defaults(),
-	on_step = function(dtime)
+	--[[on_step = function(self, dtime)
 		if (dtime > 60) then
 			print("Furnace stepping a long time ("..dtime..")")
 		end
@@ -1206,10 +1206,10 @@ minetest.register_node("default:furnace", {
 			local cooktime
 			
 		end
-	end,
+	end,]]
 })
 
-minetest.register_on_placenode(function(pos, newnode, placer)
+--[[minetest.register_on_placenode(function(pos, newnode, placer)
 	if newnode.name == "default:furnace_lua" then
 		local meta = minetest.env:get_meta(pos)
 		meta:get_inventory():set_list("fuel", {""})
@@ -1229,7 +1229,7 @@ minetest.register_on_placenode(function(pos, newnode, placer)
 		meta:set_string("src_totaltime", "0")
 		meta:set_string("src_time", "0")
 	end
-end)
+end)]]
 
 minetest.register_node("default:cobble", {
 	description = "Cobble",
