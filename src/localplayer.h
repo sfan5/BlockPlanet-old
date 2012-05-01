@@ -31,7 +31,7 @@ struct PlayerControl
 		left = false;
 		right = false;
 		jump = false;
-		aux1 = false;
+		//aux1 = false;
 		sneak = false;
 		pitch = 0;
 		yaw = 0;
@@ -42,7 +42,7 @@ struct PlayerControl
 		bool a_left,
 		bool a_right,
 		bool a_jump,
-		bool a_aux1,
+		//bool a_aux1,
 		bool a_sneak,
 		float a_pitch,
 		float a_yaw
@@ -53,7 +53,7 @@ struct PlayerControl
 		left = a_left;
 		right = a_right;
 		jump = a_jump;
-		aux1 = a_aux1;
+		//aux1 = a_aux1;
 		sneak = a_sneak;
 		pitch = a_pitch;
 		yaw = a_yaw;
@@ -63,7 +63,7 @@ struct PlayerControl
 	bool left;
 	bool right;
 	bool jump;
-	bool aux1;
+	//bool aux1;
 	bool sneak;
 	float pitch;
 	float yaw;

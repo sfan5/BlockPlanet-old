@@ -1767,7 +1767,7 @@ void the_game(
 					statustext += L" (note: no 'fly' privilege)";
 			}
 		}*/
-		if(input->wasKeyDown(getKeySetting("keymap_fastmove")))
+		/*if(input->wasKeyDown(getKeySetting("keymap_fastmove")))
 		{
 			if(g_settings->getBool("fast_move"))
 			{
@@ -1783,7 +1783,7 @@ void the_game(
 				if(!client.checkPrivilege("fast"))
 					statustext += L" (note: no 'fast' privilege)";
 			}
-		}
+		}*/
 		if(input->wasKeyDown(getKeySetting("keymap_screenshot")))
 		{
 			irr::video::IImage* const image = driver->createScreenShot(); 
@@ -2073,7 +2073,7 @@ void the_game(
 				input->isKeyDown(getKeySetting("keymap_left")),
 				input->isKeyDown(getKeySetting("keymap_right")),
 				input->isKeyDown(getKeySetting("keymap_jump")),
-				input->isKeyDown(getKeySetting("keymap_special1")),
+				//input->isKeyDown(getKeySetting("keymap_special1")),
 				input->isKeyDown(getKeySetting("keymap_sneak")),
 				camera_pitch,
 				camera_yaw

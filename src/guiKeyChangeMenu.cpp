@@ -408,9 +408,9 @@ bool GUIKeyChangeMenu::acceptInput()
 	g_settings->set("keymap_cmd", key_cmd.sym());
 	g_settings->set("keymap_console", key_console.sym());
 	g_settings->set("keymap_rangeselect", key_range.sym());
-	g_settings->set("keymap_freemove", key_fly.sym());
-	g_settings->set("keymap_fastmove", key_fast.sym());
-	g_settings->set("keymap_special1", key_use.sym());
+	//g_settings->set("keymap_freemove", key_fly.sym());
+	//g_settings->set("keymap_fastmove", key_fast.sym());
+	//g_settings->set("keymap_special1", key_use.sym());
 	g_settings->set("keymap_print_debug_stacks", key_dump.sym());
 	clearKeyCache();
 	return true;
@@ -429,9 +429,9 @@ void GUIKeyChangeMenu::init_keys()
 	key_cmd = getKeySetting("keymap_cmd");
 	key_console = getKeySetting("keymap_console");
 	key_range = getKeySetting("keymap_rangeselect");
-	key_fly = getKeySetting("keymap_freemove");
-	key_fast = getKeySetting("keymap_fastmove");
-	key_use = getKeySetting("keymap_special1");
+	//key_fly = getKeySetting("keymap_freemove");
+	//key_fast = getKeySetting("keymap_fastmove");
+	//key_use = getKeySetting("keymap_special1");
 	key_dump = getKeySetting("keymap_print_debug_stacks");
 }
 

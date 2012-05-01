@@ -229,6 +229,7 @@ void RandomInputHandler::step(float dtime)
 			keydown.toggle(getKeySetting("keymap_jump"));
 		}
 	}
+#if 0
 	{
 		static float counter1 = 0;
 		counter1 -= dtime;
@@ -238,6 +239,7 @@ void RandomInputHandler::step(float dtime)
 			keydown.toggle(getKeySetting("keymap_special1"));
 		}
 	}
+#endif
 	{
 		static float counter1 = 0;
 		counter1 -= dtime;
