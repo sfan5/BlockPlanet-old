@@ -1163,13 +1163,21 @@ void Server::start(unsigned short port)
 	m_thread.Start();
 	
 	// ASCII art for the win!
-	actionstream
+	/*actionstream
 	<<"        .__               __                   __   "<<std::endl
 	<<"  _____ |__| ____   _____/  |_  ____   _______/  |_ "<<std::endl
 	<<" /     \\|  |/    \\_/ __ \\   __\\/ __ \\ /  ___/\\   __\\"<<std::endl
 	<<"|  Y Y  \\  |   |  \\  ___/|  | \\  ___/ \\___ \\  |  |  "<<std::endl
 	<<"|__|_|  /__|___|  /\\___  >__|  \\___  >____  > |__|  "<<std::endl
-	<<"      \\/        \\/     \\/          \\/     \\/        "<<std::endl;
+	<<"      \\/        \\/     \\/          \\/     \\/        "<<std::endl;*/
+	actionstream
+	<<" ____  _            _    ____  _                  _   "<<std::endl
+	<<"| __ )| | ___   ___| | _|  _ \\| | __ _ _ __   ___| |_ "<<std::endl
+	<<"|  _ \\| |/ _ \\ / __| |/ / |_) | |/ _` | '_ \\ / _ \\ __|"<<std::endl
+	<<"| |_) | | (_) | (__|   <|  __/| | (_| | | | |  __/ |_ "<<std::endl
+	<<"|____/|_|\\___/ \\___|_|\\_\\_|   |_|\\__,_|_| |_|\\___|\\__|"<<std::endl
+	<<"                                                      "<<std::endl;
+	
 	actionstream<<"World at ["<<m_path_world<<"]"<<std::endl;
 	actionstream<<"Server for gameid=\""<<m_gamespec.id
 			<<"\" listening on port "<<port<<"."<<std::endl;
