@@ -256,19 +256,9 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 	{
 		m_sprinting_fov_state += incr;
 	}*/
-	if(player->is_sprinting)
+	if(player->sprinting_timer != -10 && player->sprinting_timer != -20)
 	{
-		if(player->sprinting_timer != -10)
-		{
-			m_sprinting_fov_state = 0.3-player->sprinting_timer;
-		}
-	}
-	else
-	{
-		if(player->sprinting_timer != -20)
-		{
-			m_sprinting_fov_state = 0.3-player->sprinting_timer;
-		}
+		m_sprinting_fov_state = 0.3-player->sprinting_timer;
 	}
 
 	m_headnode->updateAbsolutePosition();
