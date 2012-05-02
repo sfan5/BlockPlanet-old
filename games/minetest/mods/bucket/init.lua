@@ -36,20 +36,22 @@ function bucket.register_liquid(source, flowing, itemname, inventory_image)
 			stack_max = 1,
 			liquids_pointable = true,
 			on_use = function(itemstack, user, pointed_thing)
-				-- Must be pointing to node
-				if pointed_thing.type ~= "node" then
-					return
+				if minetest.get_player_privs(user)["interact"] then
+					-- Must be pointing to node
+					if pointed_thing.type ~= "node" then
+						return
+					end
+					-- Check if pointing to a liquid
+					n = minetest.env:get_node(pointed_thing.under)
+					if bucket.liquids[n.name] == nil then
+						-- Not a liquid
+						minetest.env:add_node(pointed_thing.above, {name=source})
+					elseif n.name ~= source then
+						-- It's a liquid
+						minetest.env:add_node(pointed_thing.under, {name=source})
+					end
+					return {name="bucket:bucket_empty"}
 				end
-				-- Check if pointing to a liquid
-				n = minetest.env:get_node(pointed_thing.under)
-				if bucket.liquids[n.name] == nil then
-					-- Not a liquid
-					minetest.env:add_node(pointed_thing.above, {name=source})
-				elseif n.name ~= source then
-					-- It's a liquid
-					minetest.env:add_node(pointed_thing.under, {name=source})
-				end
-				return {name="bucket:bucket_empty"}
 			end
 		})
 	end
@@ -60,16 +62,18 @@ minetest.register_craftitem("bucket:bucket_empty", {
 	stack_max = 1,
 	liquids_pointable = true,
 	on_use = function(itemstack, user, pointed_thing)
-		-- Must be pointing to node
-		if pointed_thing.type ~= "node" then
-			return
-		end
-		-- Check if pointing to a liquid source
-		n = minetest.env:get_node(pointed_thing.under)
-		liquiddef = bucket.liquids[n.name]
-		if liquiddef ~= nil and liquiddef.source == n.name and liquiddef.itemname ~= nil then
-			minetest.env:add_node(pointed_thing.under, {name="air"})
-			return {name=liquiddef.itemname}
+		if minetest.get_player_privs(name)["interact"] then
+			-- Must be pointing to node
+			if pointed_thing.type ~= "node" then
+				return
+			end
+			-- Check if pointing to a liquid source
+			n = minetest.env:get_node(pointed_thing.under)
+			liquiddef = bucket.liquids[n.name]
+			if liquiddef ~= nil and liquiddef.source == n.name and liquiddef.itemname ~= nil then
+				minetest.env:add_node(pointed_thing.under, {name="air"})
+				return {name=liquiddef.itemname}
+			end
 		end
 	end,
 })
