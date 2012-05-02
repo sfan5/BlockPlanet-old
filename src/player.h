@@ -165,6 +165,8 @@ public:
 
 	float hurt_tilt_timer_max;
 
+	float sprinting_timer;
+
 	float enable_sprinting_timer;
 
 	float enable_flying_timer;

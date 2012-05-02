@@ -2994,6 +2994,58 @@ void the_game(
 		}
 		
 		/*
+			Sprinting camera timer
+		*/
+		// Number is calculated by: 0.3/NUM.
+		// I chose 0.5, so 0.3/0.5 = 0.5
+		f32 num = 0.6;
+		f32 num1 = 1;
+		if(player->is_sprinting)
+		{
+			if(player->sprinting_timer == -20)
+			{
+				player->sprinting_timer = 0.3;
+			}
+			if(player->sprinting_timer != -10)
+			{
+				if(player->sprinting_timer > 0.0)
+				{
+					player->sprinting_timer -= dtime*num;
+					if(player->sprinting_timer < 0.0)
+					{
+						player->sprinting_timer = -10;
+					}
+				}
+				else
+				{
+					player->sprinting_timer = 0.3;
+				}
+			}
+		}
+		else
+		{
+			if(player->sprinting_timer == -10)
+			{
+				player->sprinting_timer = 0;
+			}
+			if(player->sprinting_timer != -20)
+			{
+				if(player->sprinting_timer < 0.3)
+				{
+					player->sprinting_timer += dtime*num1;
+					if(player->sprinting_timer > 0.3)
+					{
+						player->sprinting_timer = -20;
+					}
+				}
+				else
+				{
+					player->sprinting_timer = 0;
+				}
+			}
+		}
+		
+		/*
 			Time that has to pass between key_forward presses to enable sprinting
 		*/
 		if(player->enable_sprinting_timer > 0.0)

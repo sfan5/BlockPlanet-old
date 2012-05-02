@@ -167,6 +167,9 @@ private:
 	// Speed of view bobbing animation
 	f32 m_view_bobbing_speed;
 
+	f32 m_sprinting_fov_state;
+	f32 m_sprinting_fov_states;
+
 	// Digging animation frame (0 <= m_digging_anim < 1)
 	f32 m_digging_anim;
 	// If -1, no digging animation

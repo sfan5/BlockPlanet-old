@@ -74,6 +74,9 @@ Camera::Camera(scene::ISceneManager* smgr, MapDrawControl& draw_control,
 	m_view_bobbing_state(0),
 	m_view_bobbing_speed(0),
 
+	m_sprinting_fov_state(0),
+	m_sprinting_fov_states(5),
+
 	m_digging_anim(0),
 	m_digging_button(-1)
 {
@@ -239,22 +242,45 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 	m_playernode->setRotation(v3f(0, -1 * player->getYaw(), 0));
 	m_playernode->updateAbsolutePosition();
 
-	//Get camera tilt timer (hurt animation)
+	// Get camera tilt timer (hurt animation)
 	float cameratilt = fabs(fabs(-(player->hurt_tilt_timer_max/2)+player->hurt_tilt_timer)-player->hurt_tilt_timer_max/2)/5;
 
 	v3f campos(player->getEyeOffset());
 	v3f camrot(player->getPitch(), 0, 0);
+	//f32 incr = 0.3/m_sprinting_fov_states;
+	/*if(m_sprinting_fov_state <= 0)
+	{
+		m_sprinting_fov_state = incr;
+	}
+	else if(m_sprinting_fov_state < 0.3)
+	{
+		m_sprinting_fov_state += incr;
+	}*/
+	if(player->is_sprinting)
+	{
+		if(player->sprinting_timer != -10)
+		{
+			m_sprinting_fov_state = 0.3-player->sprinting_timer;
+		}
+	}
+	else
+	{
+		if(player->sprinting_timer != -20)
+		{
+			m_sprinting_fov_state = 0.3-player->sprinting_timer;
+		}
+	}
 
 	m_headnode->updateAbsolutePosition();
-	if (cameratilt > 0)
+	if(cameratilt > 0)
 	{
 		campos += v3f(0, cameratilt * -13, 0);
 		camrot += v3f(0, 0, cameratilt * 13 * BS);
 	}
-	if(player->is_sprinting)
-	{
-		campos += v3f(0, 0, 0.3 * BS);
-	}
+	/*if(player->is_sprinting)
+	{*/
+		campos += v3f(0, 0, m_sprinting_fov_state * BS);
+	//}
 
 	// Set head node transformation
 	m_headnode->setPosition(campos);
@@ -333,11 +359,11 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 	m_fov_y *= MYMAX(1.0, MYMIN(1.4, sqrt(16./10. / m_aspect)));
 	// WTF is this? It can't be right
 	m_fov_x = 2 * atan(0.5 * m_aspect * tan(m_fov_y));
-	if(player->is_sprinting)
-	{
-		m_fov_x += 0.3;
-		m_fov_y += 0.3;
-	}
+	/*if(player->is_sprinting)
+	{*/
+		m_fov_x += m_sprinting_fov_state;
+		m_fov_y += m_sprinting_fov_state;
+	//}
 	m_cameranode->setAspectRatio(m_aspect);
 	m_cameranode->setFOV(m_fov_y);
 
