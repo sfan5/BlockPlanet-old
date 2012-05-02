@@ -501,61 +501,83 @@ public:
 					tname_tiles[j] = "unknown_block.png";
                         }
 
-			switch(f->drawtype){
-			default:
-			case NDT_NORMAL:
-				f->solidness = 2;
-				break;
-			case NDT_AIRLIKE:
-				f->solidness = 0;
-				break;
-			case NDT_LIQUID:
-				assert(f->liquid_type == LIQUID_SOURCE);
-				if(opaque_water)
-					f->alpha = 255;
-				if(new_style_water){
-					f->solidness = 0;
-				} else {
-					f->solidness = 1;
-					if(f->alpha == 255)
-						f->solidness = 2;
-					f->backface_culling = false;
+			switch(f->drawtype)
+			{
+				default:
+				case NDT_NORMAL:
+				{
+					f->solidness = 2;
+					break;
 				}
-				break;
-			case NDT_FLOWINGLIQUID:
-				assert(f->liquid_type == LIQUID_FLOWING);
-				f->solidness = 0;
-				if(opaque_water)
-					f->alpha = 255;
-				break;
-			case NDT_GLASSLIKE:
-				f->solidness = 0;
-				f->visual_solidness = 1;
-				break;
-			case NDT_ALLFACES:
-				f->solidness = 0;
-				f->visual_solidness = 1;
-				break;
-			case NDT_ALLFACES_OPTIONAL:
-				if(new_style_leaves){
-					f->drawtype = NDT_ALLFACES;
+				case NDT_JELLO:
+				{
+					f->solidness = 0;
+					break;
+				}
+				case NDT_AIRLIKE:
+				{
+					f->solidness = 0;
+					break;
+				}
+				case NDT_LIQUID:
+				{
+					assert(f->liquid_type == LIQUID_SOURCE);
+					if(opaque_water)
+						f->alpha = 255;
+					if(new_style_water){
+						f->solidness = 0;
+					} else {
+						f->solidness = 1;
+						if(f->alpha == 255)
+							f->solidness = 2;
+						f->backface_culling = false;
+					}
+					break;
+				}
+				case NDT_FLOWINGLIQUID:
+				{
+					assert(f->liquid_type == LIQUID_FLOWING);
+					f->solidness = 0;
+					if(opaque_water)
+						f->alpha = 255;
+					break;
+				}
+				case NDT_GLASSLIKE:
+				{
 					f->solidness = 0;
 					f->visual_solidness = 1;
-				} else {
-					f->drawtype = NDT_NORMAL;
-					f->solidness = 2;
-					for(u32 i=0; i<6; i++){
-						tname_tiles[i] += std::string("^[noalpha");
-					}
+					break;
 				}
-				break;
-			case NDT_TORCHLIKE:
-			case NDT_SIGNLIKE:
-			case NDT_PLANTLIKE:
-			case NDT_FENCELIKE:
-			case NDT_RAILLIKE:
-				f->solidness = 0;
-				break;
+				case NDT_ALLFACES:
+				{
+					f->solidness = 0;
+					f->visual_solidness = 1;
+					break;
+				}
+				case NDT_ALLFACES_OPTIONAL:
+				{
+					if(new_style_leaves){
+						f->drawtype = NDT_ALLFACES;
+						f->solidness = 0;
+						f->visual_solidness = 1;
+					} else {
+						f->drawtype = NDT_NORMAL;
+						f->solidness = 2;
+						for(u32 i=0; i<6; i++){
+							tname_tiles[i] += std::string("^[noalpha");
+						}
+					}
+					break;
+				}
+				case NDT_TORCHLIKE:
+				case NDT_SIGNLIKE:
+				case NDT_PLANTLIKE:
+				case NDT_FENCELIKE:
+				case NDT_RAILLIKE:
+				{
+					f->solidness = 0;
+					break;
+				}
 			}
 
 			// Tile textures

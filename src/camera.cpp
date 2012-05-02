@@ -267,10 +267,7 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 		campos += v3f(0, cameratilt * -13, 0);
 		camrot += v3f(0, 0, cameratilt * 13 * BS);
 	}
-	/*if(player->is_sprinting)
-	{*/
-		campos += v3f(0, 0, m_sprinting_fov_state * BS);
-	//}
+	campos += v3f(0, 0, m_sprinting_fov_state * BS);
 
 	// Set head node transformation
 	m_headnode->setPosition(campos);
@@ -349,11 +346,8 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 	m_fov_y *= MYMAX(1.0, MYMIN(1.4, sqrt(16./10. / m_aspect)));
 	// WTF is this? It can't be right
 	m_fov_x = 2 * atan(0.5 * m_aspect * tan(m_fov_y));
-	/*if(player->is_sprinting)
-	{*/
-		m_fov_x += m_sprinting_fov_state;
-		m_fov_y += m_sprinting_fov_state;
-	//}
+	m_fov_x += m_sprinting_fov_state;
+	m_fov_y += m_sprinting_fov_state;
 	m_cameranode->setAspectRatio(m_aspect);
 	m_cameranode->setFOV(m_fov_y);
 

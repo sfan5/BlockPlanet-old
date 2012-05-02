@@ -377,6 +377,7 @@ struct EnumString es_ItemType[] =
 struct EnumString es_DrawType[] =
 {
 	{NDT_NORMAL, "normal"},
+	{NDT_JELLO, "jello"},
 	{NDT_AIRLIKE, "airlike"},
 	{NDT_LIQUID, "liquid"},
 	{NDT_FLOWINGLIQUID, "flowingliquid"},
@@ -413,6 +414,7 @@ struct EnumString es_LiquidType[] =
 	{LIQUID_NONE, "none"},
 	{LIQUID_FLOWING, "flowing"},
 	{LIQUID_SOURCE, "source"},
+	{LIQUID_SOURCE, "jello"},
 	{0, NULL},
 };
 

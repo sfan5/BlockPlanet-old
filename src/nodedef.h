@@ -57,7 +57,8 @@ enum LiquidType
 {
 	LIQUID_NONE,
 	LIQUID_FLOWING,
-	LIQUID_SOURCE
+	LIQUID_SOURCE,
+	LIQUID_JELLO,
 };
 
 enum NodeBoxType
@@ -112,6 +113,7 @@ struct MaterialSpec
 enum NodeDrawType
 {
 	NDT_NORMAL, // A basic solid block
+	NDT_JELLO, // A block that is half-liquid
 	NDT_AIRLIKE, // Nothing is drawn
 	NDT_LIQUID, // Do not draw face towards same kind of flowing/source liquid
 	NDT_FLOWINGLIQUID, // A very special kind of thing
