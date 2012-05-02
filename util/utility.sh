@@ -207,6 +207,135 @@ displayhelp()
 	done
 }
 
+
+# Percentage Utilities
+
+tput init
+export COLUMNS=`tput cols`
+
+# Initializes a progress bar
+# # Usage: #
+# percent total
+# # Arguments: #
+# total = Total number of items
+# # Example: #
+# percent 20
+percent()
+{
+	export COLS=$(($COLUMNS-3))
+	export INCREASE=$(($COLS/$1))
+	export DONE=1
+	export COUNT=0
+	export SPACE=0
+	printf "\r"
+	echo -n "["
+	while [ $DONE -eq 1 ]
+	do
+		if [ $SPACE -ge $COLS ]
+		then
+			DONE=0
+		else
+			echo -n " "
+			SPACE=$(($SPACE+1))
+		fi
+	done
+	echo -n "]"
+}
+
+# Finishes a progress bar
+# # Usage: #
+# percentfinish
+# # Example: #
+# percentfinish
+percentfinish()
+{
+	export COLS=$(($COLUMNS-3))
+	DONE=1
+	CURRENTNUM=0
+	printf "\r"
+	echo -n "["
+	while [ $DONE -eq 1 ]
+	do
+		if [ $CURRENTNUM -eq $COLS ]
+		then
+			 DONE=0
+		else
+			echo -n "="
+			CURRENTNUM=$(($CURRENTNUM+1))
+		fi
+	done
+	echo -n "]"
+}
+
+# Updates a progress bar
+# # Usage: #
+# percentupd8 total current
+# # Arguments: #
+# total = Total number of items
+# current = Current number
+# # Example: #
+# percentupd8 20 5
+percentupd8()
+{
+	export COLS=$(($COLUMNS-3))
+	tempans=$1
+	export INCREASE=$(($COLS/$tempans))
+	export DONE=1
+	export FINISHED=$tempans
+	helper1()
+	{
+		export DONEH1=1
+		export COUNT=0
+		export SPACE=0
+		export TOTALCOUNT=$1
+		echo -n "["
+		while [ $DONEH1 -eq 1 ]
+		do
+			if [ $TOTALCOUNT -eq $COUNT ]
+			then
+				if [ $SPACE -ge $COLS ]
+				then
+					DONEH1=0
+				else
+					echo -n " "
+					SPACE=$(($SPACE+1))
+				fi
+			else
+				echo -n "="
+				COUNT=$(($COUNT+1))
+				SPACE=$(($SPACE+1))
+			fi
+		done
+		echo -n "]"
+	}
+	helper2()
+	{
+		export ANS=0
+		export DONEH2=1
+		export CURRENTNUM=0
+		export NUM=$1
+		while [ $DONEH2 -eq 1 ]
+		do
+			if [ $CURRENTNUM -eq $NUM ]
+			then
+				DONEH2=0
+			else
+				ANS=$(($ANS+$INCREASE))
+				CURRENTNUM=$(($CURRENTNUM+1))
+			fi
+		done
+		echo $ANS
+	}
+	if [ $tempans -eq $2 ]
+	then
+		percentfinish
+	else
+		printf "\r"
+		helper1 `helper2 $2`
+	fi
+}
+
+
 # Installation Utilities
 
 

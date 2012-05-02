@@ -63,21 +63,43 @@ fi
 
 bboxes "BlockPlanet Installation Script"
 echo
-inst build-essential Essential_Build_Utilities libirrlicht-dev Irrlicht_Development_Files cmake CMake libbz2-dev BZ2_Development_Files libpng12-dev PNG_Development_Files libjpeg8-dev JPEG_Development_Files libxxf86vm-dev X11_Free86_Development_Files libgl1-mesa-dev GL_Development_Files libsqlite3-dev SQLite_Development_Files libogg-dev OGG_Development_Files libvorbis-dev Vorbis_Development_Files libopenal-dev OpenAL_Development_Files libcurl3 cURL_Library libcurl4-gnutls-dev cURL_Development_Files unzip Unzipper
+inst build-essential Essential_Build_Utilities libirrlicht-dev Irrlicht_Development_Files cmake CMake libbz2-dev BZ2_Development_Files libpng12-dev PNG_Development_Files libjpeg8-dev JPEG_Development_Files libxxf86vm-dev X11_Free86_Development_Files libgl1-mesa-dev GL_Development_Files libsqlite3-dev SQLite_Development_Files libogg-dev OGG_Development_Files libvorbis-dev Vorbis_Development_Files libopenal-dev OpenAL_Development_Files libcurl3 cURL_Library libcurl4-gnutls-dev cURL_Development_Files unzip Unzipper ncurses-bin Shell_NCurses
 echo
 
-echo "Downloading BlockPlanet Source"
-rm -f /tmp/blockplanet.zip
-wget https://github.com/MiJyn/BlockPlanet/zipball/master -O /tmp/blockplanet.zip
+echo "Downloading and extracting BlockPlanet Source"
+export NOC=7
+export NOCC=1
+percent $NOC
+rm -f /tmp/blockplanet.zip &> /dev/null
+percentupd8 $NOC $NOCC
+NOCC=$(($NOCC+1))
+wget https://github.com/MiJyn/BlockPlanet/zipball/master -O /tmp/blockplanet.zip &> /dev/null
+percentupd8 $NOC $NOCC
+NOCC=$(($NOCC+1))
 mkdir -p $TARGET &> /dev/null
-cd $TARGET
+percentupd8 $NOC $NOCC
+NOCC=$(($NOCC+1))
+cd $TARGET &> /dev/null
+percentupd8 $NOC $NOCC
+NOCC=$(($NOCC+1))
 unzip /tmp/blockplanet.zip &> /dev/null
-cd *
+percentupd8 $NOC $NOCC
+NOCC=$(($NOCC+1))
+cd * &> /dev/null
+percentfinish
 echo
-echo "Compiling BlockPlanet"
+echo "Creating structure"
+export NOC=4
+export NOCC=1
+percent $NOC
 mkdir build
+percentupd8 $NOC $NOCC
+NOCC=$(($NOCC+1))
 cd build
+percentupd8 $NOC $NOCC
+NOCC=$(($NOCC+1))
 cmake .. && make
+percentfinish
 echo
 echo "Installing BlockPlanet"
 sudo make install

@@ -196,7 +196,7 @@ void GUIMainMenu::regenerateGui(v2u32 screensize)
 		core::rect<s32> rect(0, 0, size.X, 40);
 		rect += v2s32(4, 0);
 		Environment->addStaticText(narrow_to_wide(
-				"Minetest-c55 " VERSION_STRING).c_str(),
+				"BlockPlanet " VERSION_STRING).c_str(),
 				rect, false, true, this, -1);
 	}
 
