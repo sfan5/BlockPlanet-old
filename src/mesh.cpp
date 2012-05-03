@@ -92,6 +92,13 @@ scene::IAnimatedMesh* createCubeMesh(v3f scale)
 	return anim_mesh;
 }
 
+scene::IAnimatedMesh* createMeshFromFile(std::string filename, v3f scale, scene::ISceneManager* smgr)
+{
+	scene::SAnimatedMesh *anim_mesh = new scene::SAnimatedMesh(smgr->getMesh(filename.c_str()));
+	scaleMesh(anim_mesh, scale);  // also recalculates bounding box
+	return anim_mesh;
+}
+
 static scene::IAnimatedMesh* extrudeARGB(u32 twidth, u32 theight, u8 *data)
 {
 	const s32 argb_wstep = 4 * twidth;

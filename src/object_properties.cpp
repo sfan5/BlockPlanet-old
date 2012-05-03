@@ -34,7 +34,8 @@ ObjectProperties::ObjectProperties():
 	initial_sprite_basepos(0,0),
 	is_visible(true),
 	makes_footstep_sound(false),
-	automatic_rotate(0)
+	automatic_rotate(0),
+	meshfile()
 {
 	textures.push_back("unknown_object.png");
 	textures_3d.push_back("unknown_object.png");
@@ -48,6 +49,7 @@ std::string ObjectProperties::dump()
 	os<<", weight="<<weight;
 	os<<", collisionbox="<<PP(collisionbox.MinEdge)<<","<<PP(collisionbox.MaxEdge);
 	os<<", visual="<<visual;
+	os<<", meshfile="<<meshfile;
 	os<<", visual_size="<<PP2(visual_size);
 	os<<", textures=[";
 	for(u32 i=0; i<textures.size(); i++){
@@ -74,6 +76,7 @@ void ObjectProperties::serialize(std::ostream &os) const
 	writeV3F1000(os, collisionbox.MinEdge);
 	writeV3F1000(os, collisionbox.MaxEdge);
 	os<<serializeString(visual);
+	os<<serializeString(meshfile);
 	writeV2F1000(os, visual_size);
 	writeU16(os, textures.size());
 	for(u32 i=0; i<textures.size(); i++){
@@ -101,6 +104,7 @@ void ObjectProperties::deSerialize(std::istream &is)
 	collisionbox.MinEdge = readV3F1000(is);
 	collisionbox.MaxEdge = readV3F1000(is);
 	visual = deSerializeString(is);
+	meshfile = deSerializeString(is);
 	visual_size = readV2F1000(is);
 	textures.clear();
 	u32 texture_count = readU16(is);

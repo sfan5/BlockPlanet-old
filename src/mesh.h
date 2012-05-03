@@ -33,6 +33,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 scene::IAnimatedMesh* createCubeMesh(v3f scale);
 
 /*
+	Create a mesh from a file.
+*/
+scene::IAnimatedMesh* createMeshFromFile(std::string filename, v3f scale, scene::ISceneManager* smgr);
+
+/*
 	Create a new extruded mesh from a texture.
 	Maximum bounding box is (+-scale.X/2, +-scale.Y/2, +-scale.Z).
 	Thickness is in Z direction.

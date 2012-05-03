@@ -4094,6 +4094,7 @@ void Server::fillMediaCache()
 		paths.push_back(mod.path + DIR_DELIM + "textures");
 		paths.push_back(mod.path + DIR_DELIM + "sounds");
 		paths.push_back(mod.path + DIR_DELIM + "media");
+		paths.push_back(mod.path + DIR_DELIM + "meshes");
 	}
 	
 	// Collect media file information from paths into cache

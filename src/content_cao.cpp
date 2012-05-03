@@ -1369,7 +1369,21 @@ public:
 				u8 li = m_last_light;
 				setMeshColor(m_meshnode->getMesh(), video::SColor(255,li,li,li));
 			}
-		} else {
+		}
+		else if(m_prop.visual == "file")
+		{
+			scene::IMesh *mesh = createMeshFromFile(m_prop.meshfile, v3f(BS,BS,BS), smgr);
+			m_meshnode = smgr->addMeshSceneNode(mesh, NULL);
+			mesh->drop();
+
+			m_meshnode->setScale(v3f(m_prop.visual_size.X,
+				m_prop.visual_size.Y,
+				m_prop.visual_size.X));
+			u8 li = m_last_light;
+			setMeshColor(m_meshnode->getMesh(), video::SColor(255,li,li,li));
+		}
+		else
+		{
 			infostream<<"GenericCAO::addToScene(): \""<<m_prop.visual
 					<<"\" not supported"<<std::endl;
 		}
