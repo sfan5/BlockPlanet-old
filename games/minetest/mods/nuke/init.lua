@@ -147,14 +147,6 @@ function TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:get_inventory():add_item("main", "nuke:tnt")
-	end
-end
 minetest.register_entity("nuke:tnt", TNT)
 
 ----- ACTIVATED BY OTHER TNT
@@ -339,15 +331,6 @@ function IRON_TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function IRON_TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:get_inventory():add_item("main", "nuke:iron_tnt")
-	end
-end
-
 minetest.register_entity("nuke:iron_tnt", IRON_TNT)
 
 
@@ -514,15 +497,6 @@ function MESE_TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function MESE_TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:get_inventory():add_item("main", "nuke:mese_tnt")
-	end
-end
-
 minetest.register_entity("nuke:mese_tnt", MESE_TNT)
 
 -- Mese TNT
@@ -715,16 +689,6 @@ function HARDCORE_IRON_TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function HARDCORE_IRON_TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:add_to_inventory("node nuke:hardcore_iron_tnt 1")
-		hitter:set_hp(hitter:get_hp() - 1)
-	end
-end
-
 minetest.register_entity("nuke:hardcore_iron_tnt", HARDCORE_IRON_TNT)
 
 -- Hardcore Mese TNT
@@ -820,14 +784,4 @@ function HARDCORE_MESE_TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function HARDCORE_MESE_TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:add_to_inventory("node nuke:hardcore_mese_tnt 1")
-		hitter:set_hp(hitter:get_hp() - 1)
-	end
-end
-
 minetest.register_entity("nuke:hardcore_mese_tnt", HARDCORE_MESE_TNT)
