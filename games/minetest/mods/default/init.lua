@@ -748,9 +748,11 @@ end
 function default.node_sound_glass_defaults(table)
 	table = table or {}
 	table.footstep = table.footstep or
-			{name="default_stone_footstep", gain=0.25}
+			{name="wood", gain=0.25}
+	table.dig = table.dig or
+			{name="wood", gain=0.9}
 	table.dug = table.dug or
-			{name="default_break_glass", gain=1.0}
+			{name="glass_shatter", gain=1.5}
 	default.node_sound_defaults(table)
 	return table
 end
