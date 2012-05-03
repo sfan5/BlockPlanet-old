@@ -117,7 +117,7 @@ function TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_tnt",
 	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
@@ -193,7 +193,7 @@ function TNT2:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_tnt",
 	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
@@ -301,7 +301,7 @@ function IRON_TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_irontnt",
 	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
@@ -390,7 +390,7 @@ function IRON_TNT2:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_irontnt",
 	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
@@ -467,7 +467,7 @@ function MESE_TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_mesetnt",
 	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
@@ -565,7 +565,9 @@ function MESE_TNT2:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
+	minetest.sound_play("nuke_mesetnt",
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
@@ -673,8 +675,10 @@ function HARDCORE_IRON_TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
-		local pos = self.object:getpos()
+	if self.timer > 8 then
+	minetest.sound_play("nuke_mesetnt",
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
+	local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
         pos.z = math.floor(pos.z+0.5)
@@ -766,7 +770,7 @@ function HARDCORE_MESE_TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_mesetnt",
 	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
