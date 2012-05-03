@@ -35,6 +35,7 @@ scene::IAnimatedMesh* createCubeMesh(v3f scale);
 /*
 	Create a mesh from a file.
 */
+scene::IAnimatedMesh* createMeshFromFile(std::string filename, scene::ISceneManager* smgr);
 scene::IAnimatedMesh* createMeshFromFile(std::string filename, v3f scale, scene::ISceneManager* smgr);
 
 /*

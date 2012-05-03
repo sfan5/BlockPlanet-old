@@ -1373,13 +1373,13 @@ public:
 		else if(m_prop.visual == "file")
 		{
 			assert(m_prop.meshfile.c_str() != NULL);
-			scene::IMesh *mesh = createMeshFromFile(m_prop.meshfile, v3f(BS,BS,BS), smgr);
+			scene::IMesh *mesh = createMeshFromFile(m_prop.meshfile, /*v3f(BS,BS,BS),*/ smgr);
 			m_meshnode = smgr->addMeshSceneNode(mesh, NULL);
 			mesh->drop();
 
-			m_meshnode->setScale(v3f(m_prop.visual_size.X/2,
-				m_prop.visual_size.Y/2,
-				m_prop.visual_size.X/2));
+			m_meshnode->setScale(v3f((m_prop.visual_size.X*BS)/2,
+				(m_prop.visual_size.Y*BS)/2,
+				(m_prop.visual_size.X*BS)/2));
 			u8 li = m_last_light;
 			setMeshColor(m_meshnode->getMesh(), video::SColor(255,li,li,li));
 		}
