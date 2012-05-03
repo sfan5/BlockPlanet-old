@@ -1025,7 +1025,7 @@ minetest.register_abm({
 -- Portal Stuff
 minetest.register_node("nether:nether_portal", {
 	description = "Nether Portal",
-	drawtype = "glasslike",
+	drawtype = "normal",
 	tile_images = {"nether_portal_stuff.png"},
 	inventory_image = "nether_portal_stuff.png",
 	wield_image = "nether_portal_stuff.png",

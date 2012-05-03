@@ -1637,22 +1637,32 @@ void Map::transformLiquids(core::map<v3s16, MapBlock*> & modified_blocks)
 		s8 liquid_level = -1;
 		u8 liquid_kind = CONTENT_IGNORE;
 		LiquidType liquid_type = nodemgr->get(n0).liquid_type;
-		switch (liquid_type) {
+		switch (liquid_type)
+		{
 			case LIQUID_SOURCE:
+			{
 				liquid_level = LIQUID_LEVEL_SOURCE;
 				liquid_kind = nodemgr->getId(nodemgr->get(n0).liquid_alternative_flowing);
 				break;
+			}
 			case LIQUID_FLOWING:
+			{
 				liquid_level = (n0.param2 & LIQUID_LEVEL_MASK);
 				liquid_kind = n0.getContent();
 				break;
+			}
+			case LIQUID_JELLO:
 			case LIQUID_NONE:
+			{
 				// if this is an air node, it *could* be transformed into a liquid. otherwise,
 				// continue with the next node.
 				if (n0.getContent() != CONTENT_AIR)
+				{
 					continue;
+				}
 				liquid_kind = CONTENT_AIR;
 				break;
+			}
 		}
 
 		/*
@@ -1680,8 +1690,11 @@ void Map::transformLiquids(core::map<v3s16, MapBlock*> & modified_blocks)
 			}
 			v3s16 npos = p0 + dirs[i];
 			NodeNeighbor nb = {getNodeNoEx(npos), nt, npos};
-			switch (nodemgr->get(nb.n.getContent()).liquid_type) {
+			switch (nodemgr->get(nb.n.getContent()).liquid_type)
+			{
+				case LIQUID_JELLO:
 				case LIQUID_NONE:
+				{
 					if (nb.n.getContent() == CONTENT_AIR) {
 						airs[num_airs++] = nb;
 						// if the current node is a water source the neighbor
@@ -1697,7 +1710,9 @@ void Map::transformLiquids(core::map<v3s16, MapBlock*> & modified_blocks)
 						neutrals[num_neutrals++] = nb;
 					}
 					break;
+				}
 				case LIQUID_SOURCE:
+				{
 					// if this node is not (yet) of a liquid type, choose the first liquid type we encounter 
 					if (liquid_kind == CONTENT_AIR)
 						liquid_kind = nodemgr->getId(nodemgr->get(nb.n).liquid_alternative_flowing);
@@ -1709,7 +1724,9 @@ void Map::transformLiquids(core::map<v3s16, MapBlock*> & modified_blocks)
 							sources[num_sources++] = nb;
 					}
 					break;
+				}
 				case LIQUID_FLOWING:
+				{
 					// if this node is not (yet) of a liquid type, choose the first liquid type we encounter
 					if (liquid_kind == CONTENT_AIR)
 						liquid_kind = nodemgr->getId(nodemgr->get(nb.n).liquid_alternative_flowing);
@@ -1721,6 +1738,7 @@ void Map::transformLiquids(core::map<v3s16, MapBlock*> & modified_blocks)
 							flowing_down = true;
 					}
 					break;
+				}
 			}
 		}
 
@@ -1811,7 +1829,8 @@ void Map::transformLiquids(core::map<v3s16, MapBlock*> & modified_blocks)
 		setNode(p0, n0);
 		v3s16 blockpos = getNodeBlockPos(p0);
 		MapBlock *block = getBlockNoCreateNoEx(blockpos);
-		if(block != NULL) {
+		if(block != NULL)
+		{
 			modified_blocks.insert(blockpos, block);
 			// If node emits light, MapBlock requires lighting update
 			if(nodemgr->get(n0).light_source != 0)
@@ -1821,9 +1840,11 @@ void Map::transformLiquids(core::map<v3s16, MapBlock*> & modified_blocks)
 		/*
 			enqueue neighbors for update if neccessary
 		 */
-		switch (nodemgr->get(n0.getContent()).liquid_type) {
+		switch (nodemgr->get(n0.getContent()).liquid_type)
+		{
 			case LIQUID_SOURCE:
 			case LIQUID_FLOWING:
+			{
 				// make sure source flows into all neighboring nodes
 				for (u16 i = 0; i < num_flows; i++)
 					if (flows[i].t != NEIGHBOR_UPPER)
@@ -1832,11 +1853,15 @@ void Map::transformLiquids(core::map<v3s16, MapBlock*> & modified_blocks)
 					if (airs[i].t != NEIGHBOR_UPPER)
 						m_transforming_liquid.push_back(airs[i].p);
 				break;
+			}
+			case LIQUID_JELLO:
 			case LIQUID_NONE:
+			{
 				// this flow has turned to air; neighboring flows might need to do the same
 				for (u16 i = 0; i < num_flows; i++)
 					m_transforming_liquid.push_back(flows[i].p);
 				break;
+			}
 		}
 	}
 	//infostream<<"Map::transformLiquids(): loopcount="<<loopcount<<std::endl;
