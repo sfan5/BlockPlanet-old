@@ -1226,27 +1226,26 @@ minetest.register_node("default:chest_locked", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
-minetest.register_entity("default:cone_mob_entity", {
-	description = "The Evil Cone",
-	textures = {"default_chest_top.png"},
+minetest.register_entity("default:monkey_mob_entity", {
+	description = "The Evil Monkey",
+	textures = {"default_furnace_front.png"},
 	visual = "file",
-	meshfile = "cone.obj",
-	--meshfile = "/home/lkjoel/untitled.obj",
+	meshfile = "monkey.obj",
 	physical = "true",
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2},
 	sounds = default.node_sound_wood_defaults(),
 })
 
-minetest.register_node("default:cone_mob", {
-	description = "The Evil Cone",
+minetest.register_node("default:monkey_mob", {
+	description = "The Evil Monkey",
 	tile_images = {"default_chest_top.png"},
 })
 
 minetest.register_on_placenode(function(pos, newnode, placer)
-	if newnode.name == "default:cone_mob" then
+	if newnode.name == "default:monkey_mob" then
 		minetest.env:remove_node(pos)
 		nodeupdate(pos)
-		minetest.env:add_entity(pos, "default:cone_mob_entity")
+		minetest.env:add_entity(pos, "default:monkey_mob_entity")
 	end
 end)
 
