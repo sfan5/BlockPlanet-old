@@ -4117,7 +4117,8 @@ void Server::fillMediaCache()
 			const char *supported_ext[] = {
 				".png", ".jpg", ".bmp", ".tga",
 				".pcx", ".ppm", ".psd", ".wal", ".rgb",
-				".ogg",
+				".ogg", ".obj", ".3ds", ".md2", ".md3",
+				".b3d", ".ply", ".stl",
 				NULL
 			};
 			if(removeStringEnd(filename, supported_ext) == ""){

@@ -851,6 +851,25 @@ bool Client::loadMedia(const std::string &data, const std::string &filename)
 		m_sound->loadSoundData(name, data);
 		return true;
 	}
+	
+	const char *mesh_ext[] = {
+		".3ds", ".obj", ".md2", ".md3", ".b3d",
+		".ply", ".stl", NULL
+	};
+	name = removeStringEnd(filename, mesh_ext);
+	if(name != "")
+	{
+		verbosestream<<"Client: Attempting to load mesh "
+				<<"file \""<<filename<<"\""<<std::endl;
+		std::string basepath = porting::path_user + DIR_DELIM + "cache" +
+				DIR_DELIM + "media";
+		std::string path = basepath + DIR_DELIM + filename;
+		fs::CreateAllDirs(basepath);
+		std::ofstream of(path.c_str(), std::ios::binary);
+		of.write(data.c_str(), data.size());
+		of.close();
+		return true;
+	}
 
 	errorstream<<"Client: Don't know how to load file \""
 			<<filename<<"\""<<std::endl;

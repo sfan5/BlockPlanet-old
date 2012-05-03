@@ -19,11 +19,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "mesh.h"
 #include "log.h"
-#include <cassert>
 #include <iostream>
 #include <IAnimatedMesh.h>
 #include <SAnimatedMesh.h>
 #include <ICameraSceneNode.h>
+#include "porting.h"
+#include "filesys.h"
 
 // In Irrlicht 1.8 the signature of ITexture::lock was changed from
 // (bool, u32) to (E_TEXTURE_LOCK_MODE, u32).
@@ -94,7 +95,9 @@ scene::IAnimatedMesh* createCubeMesh(v3f scale)
 
 scene::IAnimatedMesh* createMeshFromFile(std::string filename, v3f scale, scene::ISceneManager* smgr)
 {
-	scene::SAnimatedMesh *anim_mesh = new scene::SAnimatedMesh(smgr->getMesh(filename.c_str()));
+	scene::SAnimatedMesh *anim_mesh = new scene::SAnimatedMesh(
+		smgr->getMesh(std::string(porting::path_user + DIR_DELIM + "cache" +
+				DIR_DELIM + "media" + DIR_DELIM + filename).c_str()));
 	scaleMesh(anim_mesh, scale);  // also recalculates bounding box
 	return anim_mesh;
 }

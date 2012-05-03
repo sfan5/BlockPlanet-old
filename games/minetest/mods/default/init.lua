@@ -1226,9 +1226,33 @@ minetest.register_node("default:chest_locked", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
-minetest.register_entity("default:furnace", {
+minetest.register_entity("default:cone_mob_entity", {
+	description = "The Evil Cone",
+	textures = {"default_chest_top.png"},
+	visual = "file",
+	meshfile = "cone.obj",
+	--meshfile = "/home/lkjoel/untitled.obj",
+	physical = "true",
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2},
+	sounds = default.node_sound_wood_defaults(),
+})
+
+minetest.register_node("default:cone_mob", {
+	description = "The Evil Cone",
+	tile_images = {"default_chest_top.png"},
+})
+
+minetest.register_on_placenode(function(pos, newnode, placer)
+	if newnode.name == "default:cone_mob" then
+		minetest.env:remove_node(pos)
+		nodeupdate(pos)
+		minetest.env:add_entity(pos, "default:cone_mob_entity")
+	end
+end)
+
+minetest.register_node("default:furnace", {
 	description = "Furnace",
-	textures = {"default_furnace_side.png", "default_furnace_side.png", "default_furnace_side.png",
+	tile_images = {"default_furnace_side.png", "default_furnace_side.png", "default_furnace_side.png",
 		"default_furnace_side.png", "default_furnace_side.png", "default_furnace_front.png"},
 	paramtype2 = "facedir",
 	metadata_name = "furnace",
