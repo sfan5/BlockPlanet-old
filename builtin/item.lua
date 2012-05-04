@@ -339,6 +339,7 @@ minetest.nodedef_default = {
 	selection_box = {type="regular"},
 	legacy_facedir_simple = false,
 	legacy_wallmounted = false,
+    fencelike_building = false,
 }
 
 minetest.craftitemdef_default = {
