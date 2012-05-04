@@ -1,13 +1,15 @@
-Minetest++
+BlockPlanet
 ==========
 
-A game built off of the best free and open source Minecraft clone, Minetest-C55.
+A fork of minetest-c55, made to be faster, funner, and have more features.
 
+Copyright (c) 2012 Jordan Craige <jordan4ibanez@gmail.com>
+and their contributors (see source file comments and the version control log)
+
+Minetest-C55:
 Copyright (c) 2010-2012 Perttu Ahola <celeron55@gmail.com>
 and their contributors (see source file comments and the version control log)
 
-This contains 2 different game modes, Minetest and Minimal.
-Game mode Minimal is just a test and will be taken out soon. Game mode Minetest has all the cool features.
 
 Further documentation
 ----------------------
@@ -18,22 +20,21 @@ Further documentation
 This game is in alpha!
 --------------------------
 - Don't expect it to work as well as a finished game will.
-- Please tell me about any bugs you come across. Just look in your debug.txt file. (/minetest/bin/debug.txt)
+- Please tell me about any bugs you come across. Just look in your debug.txt file. (/blockplanet/bin/debug.txt)
 - But other then that, have fun and expect new features :)
 
 Default Controls
 -----------------
 - WASD: Move
+    - When double-tapping W, it makes you sprint
 - Space: Jump
-- E: 
-    - While walking: Run (need the fast privelage)
-    - While flying: Go down
-- Shift: Sneak
+    - When double-tapped, it makes you fly
+- Shift:
+    - On ground: Sneak
+    - While flying or on a ladder: Go down
 - Q: Drop item
-- R: Open inventory
+- E: Open inventory
 - Mouse: Turn/look
-- C: Toggle fly (need fly privelage)
-- X: toggle fast (need fast Privelage)
 - Settable in the configuration file, see the section below.
 
 Compiling:
@@ -213,7 +214,7 @@ License of Minetest-c55 textures and sounds
 This applies to textures and sounds contained in the main Minetest
 distribution.
 
-Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)                                 
+Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
 http://creativecommons.org/licenses/by-sa/3.0/
 
 License of Minetest-c55 source code
