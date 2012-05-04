@@ -824,13 +824,15 @@ bool Client::loadMedia(const std::string &data, const std::string &filename)
 		assert(rfile);
 		// Read image
 		video::IImage *img = vdrv->createImageFromFile(rfile);
-		if(!img){
+		if(!img)
+		{
 			errorstream<<"Client: Cannot create image from data of "
 					<<"file \""<<filename<<"\""<<std::endl;
 			rfile->drop();
 			return false;
 		}
-		else {
+		else
+		{
 			m_tsrc->insertSourceImage(filename, img);
 			img->drop();
 			rfile->drop();

@@ -1804,7 +1804,7 @@ public:
 				}
 			}
 		}
-		if(m_prop.visual == "file")
+		/*if(m_prop.visual == "file")
 		{
 			std::string texturestring = "unknown_block.png";
 			if(m_prop.textures.size() > 0)
@@ -1819,12 +1819,12 @@ public:
 
 			// Set material flags and texture
 			video::SMaterial& material = m_meshnode->getMaterial(0);
-			material.setFlag(video::EMF_LIGHTING, false);
-			material.setFlag(video::EMF_BILINEAR_FILTER, false);
+			//material.setFlag(video::EMF_LIGHTING, false);
+			//material.setFlag(video::EMF_BILINEAR_FILTER, false);
 			material.setTexture(0, atlas);
-			material.getTextureMatrix(0).setTextureTranslate(pos.X, pos.Y);
-			material.getTextureMatrix(0).setTextureScale(size.X, size.Y);
-		}
+			//material.getTextureMatrix(0).setTextureTranslate(pos.X, pos.Y);
+			//material.getTextureMatrix(0).setTextureScale(size.X, size.Y);
+		}*/
 	}
 
 	void processMessage(const std::string &data)

@@ -1230,7 +1230,7 @@ minetest.register_entity("default:monkey_mob_entity", {
 	description = "The Evil Monkey",
 	textures = {"default_furnace_front.png"},
 	visual = "file",
-	meshfile = "monkey.obj",
+	meshfile = "altair.3ds",
 	physical = "true",
 	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2},
 	sounds = default.node_sound_wood_defaults(),
