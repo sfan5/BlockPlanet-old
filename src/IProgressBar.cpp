@@ -1,4 +1,4 @@
-#include "iProgressBar.h"
+#include "IProgressBar.h"
 
 IProgressBar::IProgressBar(IGUIEnvironment * guienv,const core::rect<s32>& rectangle,s32 id,IGUIElement * parent, IGUIFont * font) : IGUIElement(EGUIET_ELEMENT,guienv,parent,id,rectangle)
 {
