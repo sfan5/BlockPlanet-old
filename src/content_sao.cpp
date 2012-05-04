@@ -800,8 +800,8 @@ PlayerSAO::PlayerSAO(ServerEnvironment *env_, Player *player_, u16 peer_id_,
 	m_prop.textures.clear();
 	m_prop.textures.push_back("player.png");
 	m_prop.textures.push_back("player_back.png");
-	m_prop.textures_3d.clear();
-	m_prop.textures_3d.push_back("mt_player");
+	m_prop.textures_3d.clear(); // m_prop.textures_3d doesn't work
+	//m_prop.textures_3d.push_back("mt_player.png");
 	//m_prop.textures_3d.push_back("http://i.imgur.com/Y6Vej");
 	m_prop.spritediv = v2s16(1,1);
 	m_prop.is_visible = (getHP() != 0);

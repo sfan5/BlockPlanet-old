@@ -41,12 +41,24 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "main.h"
 #include <curl/curl.h>
 #include "filesys.h"
+#include "log.h"
 class Settings;
 struct ToolCapabilities;
 
 #define PP(x) "("<<(x).X<<","<<(x).Y<<","<<(x).Z<<")"
 
 core::map<u16, ClientActiveObject::Factory> ClientActiveObject::m_types;
+
+static std::string getSkinCacheDir()
+{
+	return porting::path_user + DIR_DELIM + "cache" + DIR_DELIM + "skins";
+}
+
+bool fexists(const char* filename)
+{
+  std::ifstream ifile(filename);
+  return ifile;
+}
 
 /*
 	SmoothTranslator
@@ -552,6 +564,7 @@ private:
 	std::string m_name;
 	bool m_is_player;
 	bool m_is_local_player; // determined locally
+    std::string texture_3d;
 	// Property-ish things
 	ObjectProperties m_prop;
 	//
@@ -596,6 +609,7 @@ public:
 		//
 		m_is_player(false),
 		m_is_local_player(false),
+        texture_3d(""),
 		//
 		m_smgr(NULL),
 		m_irr(NULL),
@@ -1699,35 +1713,43 @@ public:
 		}
 		if(m_prop.visual == "player")
 		{
-			std::string tname = "mt_player";
-			if(m_prop.textures_3d.size() >= 1)
+			std::string tname = "";
+            std::string tname_fallback = "mt_player.png";
+			if(texture_3d != "")
 			{
-				tname = m_prop.textures_3d[0];
+				tname = texture_3d;
 			}
-			tname += texmod + ".png";
-			/*std::string tpath = getTexturePath(tname);
-			if(tpath.c_str() == "" || tpath.c_str() == NULL)
+            std::cout<<"tname = '"<<tname<<"' texture_3d = '"<<texture_3d<<"\'n";
+			if(tname == "") // Not checked if Skin available
 			{
-				// Check if this is an HTTP URL
-				if(strncmp(tname.c_str(), "http://", strlen(tname.c_str())) == 0)
-				{
-					CURL *curl;
-					CURLcode res;
-					curl = curl_easy_init();
-					std::string filename = getMediaCacheDir() + DIR_DELIM + m_name + ".png";
-					FILE *ofile = fopen(filename.c_str(), "wb");
-					if(curl && ofile)
-					{
-						curl_easy_setopt(curl, CURLOPT_URL, tname.c_str());
-						curl_easy_setopt(curl, CURLOPT_WRITEDATA, ofile);
-						res = curl_easy_perform(curl);
-						curl_easy_cleanup(curl);
-						fclose(ofile);
-						tname = filename;
-					}
-				}
-			}*/
-			tname += mod;
+                std::string url = "http://www.blockpla.net/gamedata/skins/" + m_name + ".png"; // Attempt to download Skin from Skin-Server
+                CURL *curl;
+				CURLcode res;
+				curl = curl_easy_init();
+				std::string filename = getSkinCacheDir() + DIR_DELIM + m_name + ".png";
+				FILE *ofile = fopen(filename.c_str(), "wb");
+				if(curl && ofile) {
+					curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+					curl_easy_setopt(curl, CURLOPT_WRITEDATA, ofile);
+                    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1);
+					res = curl_easy_perform(curl);
+					fclose(ofile);
+					if(res == 0) { // Skin found and downloaded
+                        texture_3d = filename;
+                    } else { // HTTP Error >= 400 (no Skin downloaded)
+                        remove(filename.c_str());
+                        texture_3d = getTexturePath(tname_fallback);
+                    }
+				} else { // Other Error
+                      texture_3d = getTexturePath(tname_fallback);  
+                }
+                curl_easy_cleanup(curl);
+			}
+            
+            if(texture_3d != "")
+			{
+				tname = texture_3d;
+			}
 			if(m_body) {
 				scene::IMesh *mesh = m_body->getMesh();
 				if(mesh){
