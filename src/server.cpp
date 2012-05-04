@@ -4205,6 +4205,7 @@ void Server::sendMediaAnnouncement(u16 peer_id)
 
 	// Make packet
 	std::ostringstream os(std::ios_base::binary);
+	std::ostringstream tmp_os(std::ios_base::binary);
 
 	/*
 		u16 command
@@ -4218,16 +4219,19 @@ void Server::sendMediaAnnouncement(u16 peer_id)
 	*/
 	
 	writeU16(os, TOCLIENT_ANNOUNCE_MEDIA);
-	writeU16(os, file_announcements.size());
+	writeU16(tmp_os, file_announcements.size());
 
 	for(core::list<SendableMediaAnnouncement>::Iterator
 			j = file_announcements.begin();
 			j != file_announcements.end(); j++){
-		os<<serializeString(j->name);
-		os<<serializeString(j->sha1_digest);
+		tmp_os<<serializeString(j->name);
+		tmp_os<<serializeString(j->sha1_digest);
 	}
 
 	// Make data buffer
+	std::ostringstream tmp_os2(std::ios::binary);
+	compressZlib(tmp_os.str(), tmp_os2);
+	os<<serializeLongString(tmp_os2.str());
 	std::string s = os.str();
 	SharedBuffer<u8> data((u8*)s.c_str(), s.size());
 
@@ -4327,6 +4331,7 @@ void Server::sendRequestedMedia(u16 peer_id,
 	for(u32 i=0; i<num_bunches; i++)
 	{
 		std::ostringstream os(std::ios_base::binary);
+		std::ostringstream tmp_os(std::ios_base::binary);
 
 		/*
 			u16 command
@@ -4342,18 +4347,21 @@ void Server::sendRequestedMedia(u16 peer_id,
 		*/
 
 		writeU16(os, TOCLIENT_MEDIA);
-		writeU16(os, num_bunches);
-		writeU16(os, i);
-		writeU32(os, file_bunches[i].size());
+		writeU16(tmp_os, num_bunches);
+		writeU16(tmp_os, i);
+		writeU32(tmp_os, file_bunches[i].size());
 
 		for(core::list<SendableMedia>::Iterator
 				j = file_bunches[i].begin();
 				j != file_bunches[i].end(); j++){
-			os<<serializeString(j->name);
-			os<<serializeLongString(j->data);
+			tmp_os<<serializeString(j->name);
+			tmp_os<<serializeLongString(j->data);
 		}
 
 		// Make data buffer
+		std::ostringstream tmp_os2(std::ios::binary);
+		compressZlib(tmp_os.str(), tmp_os2);
+		os<<serializeLongString(tmp_os2.str());
 		std::string s = os.str();
 		verbosestream<<"Server::sendRequestedMedia(): bunch "
 				<<i<<"/"<<num_bunches

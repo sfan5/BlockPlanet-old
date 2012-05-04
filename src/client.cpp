@@ -1463,7 +1463,11 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 	else if(command == TOCLIENT_ANNOUNCE_MEDIA)
 	{
 		std::string datastring((char*)&data[2], datasize-2);
-		std::istringstream is(datastring, std::ios_base::binary);
+		std::istringstream is2(datastring, std::ios_base::binary);
+		std::istringstream tmp_is(deSerializeLongString(is2), std::ios::binary);
+		std::ostringstream tmp_os;
+		decompressZlib(tmp_is, tmp_os);
+		std::istringstream is(tmp_os.str());
 
 		// Mesh update thread must be stopped while
 		// updating content definitions
@@ -1546,7 +1550,11 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 	else if(command == TOCLIENT_MEDIA)
 	{
 		std::string datastring((char*)&data[2], datasize-2);
-		std::istringstream is(datastring, std::ios_base::binary);
+		std::istringstream is2(datastring, std::ios_base::binary);
+		std::istringstream tmp_is(deSerializeLongString(is2), std::ios::binary);
+		std::ostringstream tmp_os;
+		decompressZlib(tmp_is, tmp_os);
+		std::istringstream is(tmp_os.str());
 
 		// Mesh update thread must be stopped while
 		// updating content definitions
