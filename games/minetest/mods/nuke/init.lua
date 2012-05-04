@@ -117,9 +117,9 @@ function TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_tnt",
-	{pos = pos, gain = 1.0, max_hear_distance = 32,})
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
@@ -145,14 +145,6 @@ function TNT:on_step(dtime)
         end
         end
 		self.object:remove()
-	end
-end
-
-function TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:get_inventory():add_item("main", "nuke:tnt")
 	end
 end
 minetest.register_entity("nuke:tnt", TNT)
@@ -201,9 +193,9 @@ function TNT2:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_tnt",
-	{pos = pos, gain = 1.0, max_hear_distance = 32,})
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
@@ -296,10 +288,6 @@ function IRON_TNT:on_step(dtime)
     if self.timer>5 then
         self.blinktimer = self.blinktimer + dtime
         if self.timer>8 then
-	    if warning_played ~= true then 
-		minetest.sound_play("nuke_warning", {pos = pos})
-		warning_played = true
-	    end
             self.blinktimer = self.blinktimer + dtime
             self.blinktimer = self.blinktimer + dtime
         end
@@ -313,9 +301,9 @@ function IRON_TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_irontnt",
-	{pos = pos, gain = 1.0, max_hear_distance = 32,})
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
@@ -343,15 +331,6 @@ function IRON_TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function IRON_TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:get_inventory():add_item("main", "nuke:iron_tnt")
-	end
-end
-
 minetest.register_entity("nuke:iron_tnt", IRON_TNT)
 
 
@@ -411,9 +390,9 @@ function IRON_TNT2:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_irontnt",
-	{pos = pos, gain = 1.0, max_hear_distance = 32,})
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
@@ -475,10 +454,6 @@ function MESE_TNT:on_step(dtime)
     if self.timer>5 then
         self.blinktimer = self.blinktimer + dtime
         if self.timer>8 then
-	    if warning_played ~= true then 
-		minetest.sound_play("nuke_warning", {pos = pos})
-		warning_played = true
-	    end
             self.blinktimer = self.blinktimer + dtime
             self.blinktimer = self.blinktimer + dtime
         end
@@ -492,9 +467,9 @@ function MESE_TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_mesetnt",
-	{pos = pos, gain = 1.0, max_hear_distance = 32,})
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
@@ -522,15 +497,6 @@ function MESE_TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function MESE_TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:get_inventory():add_item("main", "nuke:mese_tnt")
-	end
-end
-
 minetest.register_entity("nuke:mese_tnt", MESE_TNT)
 
 -- Mese TNT
@@ -599,7 +565,9 @@ function MESE_TNT2:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
+	minetest.sound_play("nuke_mesetnt",
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
@@ -694,10 +662,6 @@ function HARDCORE_IRON_TNT:on_step(dtime)
     if self.timer>5 then
         self.blinktimer = self.blinktimer + dtime
         if self.timer>7.5 then
-	    if warning_played ~= true then 
-		minetest.sound_play("nuke_warning", {pos = pos})
-		warning_played = true
-	    end
             self.blinktimer = self.blinktimer + dtime
             self.blinktimer = self.blinktimer + dtime
         end
@@ -711,8 +675,10 @@ function HARDCORE_IRON_TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
-		local pos = self.object:getpos()
+	if self.timer > 8 then
+	minetest.sound_play("nuke_mesetnt",
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
+	local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
         pos.z = math.floor(pos.z+0.5)
@@ -727,16 +693,6 @@ function HARDCORE_IRON_TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function HARDCORE_IRON_TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:add_to_inventory("node nuke:hardcore_iron_tnt 1")
-		hitter:set_hp(hitter:get_hp() - 1)
-	end
-end
-
 minetest.register_entity("nuke:hardcore_iron_tnt", HARDCORE_IRON_TNT)
 
 -- Hardcore Mese TNT
@@ -801,10 +757,6 @@ function HARDCORE_MESE_TNT:on_step(dtime)
     if self.timer>5 then
         self.blinktimer = self.blinktimer + dtime
         if self.timer>8 then
-	    if warning_played ~= true then 
-		minetest.sound_play("nuke_warning", {pos = pos})
-		warning_played = true
-	    end
             self.blinktimer = self.blinktimer + dtime
             self.blinktimer = self.blinktimer + dtime
         end
@@ -818,9 +770,9 @@ function HARDCORE_MESE_TNT:on_step(dtime)
 		end
 		self.blinkstatus = not self.blinkstatus
 	end
-	if self.timer > 10 then
+	if self.timer > 8 then
 	minetest.sound_play("nuke_mesetnt",
-	{pos = pos, gain = 1.0, max_hear_distance = 32,})
+	{pos = pos, gain = 0.3, max_hear_distance = 32,})
 		local pos = self.object:getpos()
         pos.x = math.floor(pos.x+0.5)
         pos.y = math.floor(pos.y+0.5)
@@ -836,14 +788,4 @@ function HARDCORE_MESE_TNT:on_step(dtime)
 		self.object:remove()
 	end
 end
-
-function HARDCORE_MESE_TNT:on_punch(hitter)
-	self.health = self.health - 1
-	if self.health <= 0 then
-		self.object:remove()
-		hitter:add_to_inventory("node nuke:hardcore_mese_tnt 1")
-		hitter:set_hp(hitter:get_hp() - 1)
-	end
-end
-
 minetest.register_entity("nuke:hardcore_mese_tnt", HARDCORE_MESE_TNT)
