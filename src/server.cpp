@@ -1026,6 +1026,9 @@ Server::Server(
 	// Read Textures and calculate sha1 sums
 	fillMediaCache();
 
+	// Read Meshes and calculate sha1 sums
+	fillMeshCache();
+
 	// Apply item aliases in the node definition manager
 	m_nodedef->updateAliases(m_itemdef);
 
@@ -2171,7 +2174,8 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 		std::string checkpwd;
 		bool has_auth = scriptapi_get_auth(m_lua, playername, &checkpwd, NULL);
 		
-		if(!has_auth){
+		if(!has_auth)
+		{
 			std::wstring raw_default_password =
 				narrow_to_wide(g_settings->get("default_password"));
 			std::string use_password =
@@ -2186,12 +2190,14 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 		
 		has_auth = scriptapi_get_auth(m_lua, playername, &checkpwd, NULL);
 
-		if(!has_auth){
+		if(!has_auth)
+		{
 			SendAccessDenied(m_con, peer_id, L"Not allowed to login");
 			return;
 		}
 
-		if(password != checkpwd){
+		if(password != checkpwd)
+		{
 			infostream<<"Server: peer_id="<<peer_id
 					<<": supplied invalid password for "
 					<<playername<<std::endl;
@@ -2284,7 +2290,7 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 		sendMediaAnnouncement(peer_id);
 
 		// Send mesh announcement
-		//sendMeshAnnouncement(peer_id);
+		sendMeshAnnouncement(peer_id);
 		
 		// Send privileges
 		SendPlayerPrivileges(peer_id);
@@ -4123,7 +4129,6 @@ void Server::fillMediaCache()
 		paths.push_back(mod.path + DIR_DELIM + "textures");
 		paths.push_back(mod.path + DIR_DELIM + "sounds");
 		paths.push_back(mod.path + DIR_DELIM + "media");
-		paths.push_back(mod.path + DIR_DELIM + "meshes");
 	}
 	
 	// Collect media file information from paths into cache
@@ -4146,9 +4151,7 @@ void Server::fillMediaCache()
 			const char *supported_ext[] = {
 				".png", ".jpg", ".bmp", ".tga",
 				".pcx", ".ppm", ".psd", ".wal", ".rgb",
-				".ogg", ".obj", ".3ds", ".md2", ".md3",
-				".b3d", ".ply", ".stl",
-				NULL
+				".ogg",	NULL
 			};
 			if(removeStringEnd(filename, supported_ext) == ""){
 				infostream<<"Server: ignoring unsupported file extension: \""
@@ -4539,7 +4542,7 @@ void Server::sendMeshAnnouncement(u16 peer_id)
 	*/
 	
 	writeU16(os, TOCLIENT_ANNOUNCE_MESH);
-	writeU16(tmp_os, file_announcements.size());
+	writeU16(os, file_announcements.size());
 
 	for(core::list<SendableMeshAnnouncement>::Iterator
 			j = file_announcements.begin();
@@ -4602,7 +4605,7 @@ void Server::sendRequestedMesh(u16 peer_id,
 			continue;
 		}
 
-		//TODO get path + name
+		// TODO get path + name
 		std::string tpath = m_mesh[(*i).name].path;
 
 		// Read data
@@ -4675,9 +4678,9 @@ void Server::sendRequestedMesh(u16 peer_id,
 		*/
 
 		writeU16(os, TOCLIENT_MESH);
-		writeU16(tmp_os, num_bunches);
-		writeU16(tmp_os, i);
-		writeU32(tmp_os, file_bunches[i].size());
+		writeU16(os, num_bunches);
+		writeU16(os, i);
+		writeU32(os, file_bunches[i].size());
 
 		for(core::list<SendableMesh>::Iterator
 				j = file_bunches[i].begin();

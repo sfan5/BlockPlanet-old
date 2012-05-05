@@ -96,7 +96,7 @@ scene::IAnimatedMesh* createCubeMesh(v3f scale)
 scene::IAnimatedMesh* createMeshFromFile(std::string filename, scene::ISceneManager* smgr)
 {
 	std::string path = porting::path_user + DIR_DELIM + "cache" +
-				DIR_DELIM + "media" + DIR_DELIM;
+				DIR_DELIM + "meshes" + DIR_DELIM;
 	std::string filepath = path + filename;
 	smgr->getParameters()->setAttribute( scene::CSM_TEXTURE_PATH, path.c_str() );
 	scene::SAnimatedMesh *anim_mesh = new scene::SAnimatedMesh(

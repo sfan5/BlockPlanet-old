@@ -1676,7 +1676,7 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 
 		// Mesh update thread must be stopped while
 		// updating content definitions
-		assert(!m_mesh_update_thread.IsRunning());
+		//assert(!m_mesh_update_thread.IsRunning());
 
 		int num_files = readU16(is2);
 		
@@ -1767,7 +1767,7 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 
 		// Mesh update thread must be stopped while
 		// updating content definitions
-		assert(!m_mesh_update_thread.IsRunning());
+		//assert(!m_mesh_update_thread.IsRunning());
 
 		/*
 			u16 command
