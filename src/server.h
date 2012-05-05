@@ -261,12 +261,34 @@ struct MediaRequest
 	{}
 };
 
+struct MeshRequest
+{
+	std::string name;
+
+	MeshRequest(const std::string &name_=""):
+		name(name_)
+	{}
+};
+
 struct MediaInfo
 {
 	std::string path;
 	std::string sha1_digest;
 
 	MediaInfo(const std::string path_="",
+			const std::string sha1_digest_=""):
+		path(path_),
+		sha1_digest(sha1_digest_)
+	{
+	}
+};
+
+struct MeshInfo
+{
+	std::string path;
+	std::string sha1_digest;
+
+	MeshInfo(const std::string path_="",
 			const std::string sha1_digest_=""):
 		path(path_),
 		sha1_digest(sha1_digest_)
@@ -628,6 +650,10 @@ private:
 	void sendMediaAnnouncement(u16 peer_id);
 	void sendRequestedMedia(u16 peer_id,
 			const core::list<MediaRequest> &tosend);
+	void fillMeshCache();
+	void sendMeshAnnouncement(u16 peer_id);
+	void sendRequestedMesh(u16 peer_id,
+			const core::list<MeshRequest> &tosend);
 
 	/*
 		Something random
@@ -826,6 +852,7 @@ private:
 	friend class RemoteClient;
 
 	std::map<std::string,MediaInfo> m_media;
+	std::map<std::string,MeshInfo> m_mesh;
 
 	/*
 		Sounds

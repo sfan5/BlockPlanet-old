@@ -135,7 +135,8 @@ enum ClientEventType
 	CE_PLAYER_FORCE_MOVE,
 	CE_KICKED,
 	CE_DEATHSCREEN,
-	CE_TEXTURES_UPDATED
+	CE_TEXTURES_UPDATED,
+	CE_MESHES_UPDATED
 };
 
 struct ClientEvent
@@ -291,8 +292,13 @@ public:
 	float mediaReceiveProgress()
 	{ return m_media_receive_progress; }
 
+	float meshReceiveProgress()
+	{ return m_mesh_receive_progress; }
+
 	bool texturesReceived()
 	{ return m_media_received; }
+	bool meshesReceived()
+	{ return m_meshes_received; }
 	bool itemdefReceived()
 	{ return m_itemdef_received; }
 	bool nodedefReceived()
@@ -317,6 +323,7 @@ private:
 	
 	// Insert a media file appropriately into the appropriate manager
 	bool loadMedia(const std::string &data, const std::string &filename);
+	bool loadMeshes(const std::string &data, const std::string &filename);
 	
 	// Virtual methods from con::PeerHandler
 	void peerAdded(con::Peer *peer);
@@ -373,8 +380,13 @@ private:
 	FileCache m_media_cache;
 	// Mapping from media file name to SHA1 checksum
 	core::map<std::string, std::string> m_media_name_sha1_map;
+	FileCache m_mesh_cache;
+	// Mapping from media file name to SHA1 checksum
+	core::map<std::string, std::string> m_mesh_name_sha1_map;
 	float m_media_receive_progress;
 	bool m_media_received;
+	float m_mesh_receive_progress;
+	bool m_meshes_received;
 	bool m_itemdef_received;
 	bool m_nodedef_received;
 	friend class FarMesh;

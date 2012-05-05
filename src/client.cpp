@@ -48,11 +48,25 @@ static std::string getMediaCacheDir()
 	return porting::path_user + DIR_DELIM + "cache" + DIR_DELIM + "media";
 }
 
+static std::string getMeshCacheDir()
+{
+	return porting::path_user + DIR_DELIM + "cache" + DIR_DELIM + "meshes";
+}
+
 struct MediaRequest
 {
 	std::string name;
 
 	MediaRequest(const std::string &name_=""):
+		name(name_)
+	{}
+};
+
+struct MeshRequest
+{
+	std::string name;
+
+	MeshRequest(const std::string &name_=""):
 		name(name_)
 	{}
 };
@@ -259,8 +273,11 @@ Client::Client(
 	m_password(password),
 	m_access_denied(false),
 	m_media_cache(getMediaCacheDir()),
+	m_mesh_cache(getMeshCacheDir()),
 	m_media_receive_progress(0),
 	m_media_received(false),
+	m_mesh_receive_progress(0),
+	m_meshes_received(false),
 	m_itemdef_received(false),
 	m_nodedef_received(false),
 	m_time_of_day_set(false),
@@ -853,18 +870,31 @@ bool Client::loadMedia(const std::string &data, const std::string &filename)
 		m_sound->loadSoundData(name, data);
 		return true;
 	}
+
+	errorstream<<"Client: Don't know how to load file \""
+			<<filename<<"\""<<std::endl;
+	return false;
+}
+
+bool Client::loadMeshes(const std::string &data, const std::string &filename)
+{
+	// Silly irrlicht's const-incorrectness
+	Buffer<char> data_rw(data.c_str(), data.size());
 	
-	const char *mesh_ext[] = {
+	std::string name;
+
+	const char *ext[] = {
+		".png", ".jpg", ".bmp", ".tga",
+		".pcx", ".ppm", ".psd", ".wal", ".rgb",
 		".3ds", ".obj", ".md2", ".md3", ".b3d",
 		".ply", ".stl", NULL
 	};
-	name = removeStringEnd(filename, mesh_ext);
+	name = removeStringEnd(filename, ext);
 	if(name != "")
 	{
-		verbosestream<<"Client: Attempting to load mesh "
+		verbosestream<<"Client: Attempting to load image "
 				<<"file \""<<filename<<"\""<<std::endl;
-		std::string basepath = porting::path_user + DIR_DELIM + "cache" +
-				DIR_DELIM + "media";
+		std::string basepath = getMeshCacheDir();
 		std::string path = basepath + DIR_DELIM + filename;
 		fs::CreateAllDirs(basepath);
 		std::ofstream of(path.c_str(), std::ios::binary);
@@ -872,9 +902,6 @@ bool Client::loadMedia(const std::string &data, const std::string &filename)
 		of.close();
 		return true;
 	}
-
-	errorstream<<"Client: Don't know how to load file \""
-			<<filename<<"\""<<std::endl;
 	return false;
 }
 
@@ -1464,58 +1491,59 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 	{
 		std::string datastring((char*)&data[2], datasize-2);
 		std::istringstream is2(datastring, std::ios_base::binary);
-		std::istringstream tmp_is(deSerializeLongString(is2), std::ios::binary);
-		std::ostringstream tmp_os;
-		decompressZlib(tmp_is, tmp_os);
-		std::istringstream is(tmp_os.str());
 
 		// Mesh update thread must be stopped while
 		// updating content definitions
 		assert(!m_mesh_update_thread.IsRunning());
 
-		int num_files = readU16(is);
+		int num_files = readU16(is2);
 		
 		verbosestream<<"Client received TOCLIENT_ANNOUNCE_MEDIA ("
 				<<num_files<<" files)"<<std::endl;
-
 		core::list<MediaRequest> file_requests;
-
-		for(int i=0; i<num_files; i++)
+		if(num_files > 0)
 		{
-			//read file from cache
-			std::string name = deSerializeString(is);
-			std::string sha1_base64 = deSerializeString(is);
-
-			// if name contains illegal characters, ignore the file
-			if(!string_allowed(name, TEXTURENAME_ALLOWED_CHARS)){
-				errorstream<<"Client: ignoring illegal file name "
-						<<"sent by server: \""<<name<<"\""<<std::endl;
-				continue;
-			}
-
-			std::string sha1_raw = base64_decode(sha1_base64);
-			std::string sha1_hex = hex_encode(sha1_raw);
-			std::ostringstream tmp_os(std::ios_base::binary);
-			bool found_in_cache = m_media_cache.load_sha1(sha1_raw, tmp_os);
-			m_media_name_sha1_map.set(name, sha1_raw);
-
-			// If found in cache, try to load it from there
-			if(found_in_cache)
+			std::istringstream tmp_is(deSerializeLongString(is2), std::ios::binary);
+			std::ostringstream tmp_os;
+			decompressZlib(tmp_is, tmp_os);
+			std::istringstream is(tmp_os.str());
+			for(int i=0; i<num_files; i++)
 			{
-				bool success = loadMedia(tmp_os.str(), name);
-				if(success){
-					verbosestream<<"Client: Loaded cached media: "
-							<<sha1_hex<<" \""<<name<<"\""<<std::endl;
+				//read file from cache
+				std::string name = deSerializeString(is);
+				std::string sha1_base64 = deSerializeString(is);
+
+				// if name contains illegal characters, ignore the file
+				if(!string_allowed(name, TEXTURENAME_ALLOWED_CHARS)){
+					errorstream<<"Client: ignoring illegal file name "
+							<<"sent by server: \""<<name<<"\""<<std::endl;
 					continue;
-				} else{
-					infostream<<"Client: Failed to load cached media: "
-							<<sha1_hex<<" \""<<name<<"\""<<std::endl;
 				}
+
+				std::string sha1_raw = base64_decode(sha1_base64);
+				std::string sha1_hex = hex_encode(sha1_raw);
+				std::ostringstream tmp_os(std::ios_base::binary);
+				bool found_in_cache = m_media_cache.load_sha1(sha1_raw, tmp_os);
+				m_media_name_sha1_map.set(name, sha1_raw);
+
+				// If found in cache, try to load it from there
+				if(found_in_cache)
+				{
+					bool success = loadMedia(tmp_os.str(), name);
+					if(success){
+						verbosestream<<"Client: Loaded cached media: "
+								<<sha1_hex<<" \""<<name<<"\""<<std::endl;
+						continue;
+					} else{
+						infostream<<"Client: Failed to load cached media: "
+								<<sha1_hex<<" \""<<name<<"\""<<std::endl;
+					}
+				}
+				// Didn't load from cache; queue it to be requested
+				verbosestream<<"Client: Adding file to request list: \""
+						<<sha1_hex<<" \""<<name<<"\""<<std::endl;
+				file_requests.push_back(MediaRequest(name));
 			}
-			// Didn't load from cache; queue it to be requested
-			verbosestream<<"Client: Adding file to request list: \""
-					<<sha1_hex<<" \""<<name<<"\""<<std::endl;
-			file_requests.push_back(MediaRequest(name));
 		}
 
 		ClientEvent event;
@@ -1551,10 +1579,6 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 	{
 		std::string datastring((char*)&data[2], datasize-2);
 		std::istringstream is2(datastring, std::ios_base::binary);
-		std::istringstream tmp_is(deSerializeLongString(is2), std::ios::binary);
-		std::ostringstream tmp_os;
-		decompressZlib(tmp_is, tmp_os);
-		std::istringstream is(tmp_os.str());
 
 		// Mesh update thread must be stopped while
 		// updating content definitions
@@ -1572,53 +1596,72 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 				data
 			}
 		*/
-		int num_bunches = readU16(is);
-		int bunch_i = readU16(is);
+		int num_bunches = readU16(is2);
+		int bunch_i = readU16(is2);
 		if(num_bunches >= 2)
+		{
 			m_media_receive_progress = (float)bunch_i / (float)(num_bunches - 1);
+		}
 		else
+		{
 			m_media_receive_progress = 1.0;
+		}
 		if(bunch_i == num_bunches - 1)
+		{
 			m_media_received = true;
-		int num_files = readU32(is);
-		infostream<<"Client: Received files: bunch "<<bunch_i<<"/"
-				<<num_bunches<<" files="<<num_files
-				<<" size="<<datasize<<std::endl;
-		for(int i=0; i<num_files; i++){
-			std::string name = deSerializeString(is);
-			std::string data = deSerializeLongString(is);
-
-			// if name contains illegal characters, ignore the file
-			if(!string_allowed(name, TEXTURENAME_ALLOWED_CHARS)){
-				errorstream<<"Client: ignoring illegal file name "
-						<<"sent by server: \""<<name<<"\""<<std::endl;
-				continue;
-			}
-			
-			bool success = loadMedia(data, name);
-			if(success){
-				verbosestream<<"Client: Loaded received media: "
-						<<"\""<<name<<"\". Caching."<<std::endl;
-			} else{
-				infostream<<"Client: Failed to load received media: "
-						<<"\""<<name<<"\". Not caching."<<std::endl;
-				continue;
-			}
-
-			bool did = fs::CreateAllDirs(getMediaCacheDir());
-			if(!did){
-				errorstream<<"Could not create media cache directory"
-						<<std::endl;
-			}
-
+		}
+		int num_files = readU32(is2);
+		if(num_files >= 1)
+		{
+			std::istringstream tmp_is(deSerializeLongString(is2), std::ios::binary);
+			std::ostringstream tmp_os;
+			decompressZlib(tmp_is, tmp_os);
+			std::istringstream is(tmp_os.str());
+			infostream<<"Client: Received files: bunch "<<bunch_i<<"/"
+					<<num_bunches<<" files="<<num_files
+					<<" size="<<datasize<<std::endl;
+			for(int i=0; i<num_files; i++)
 			{
-				core::map<std::string, std::string>::Node *n;
-				n = m_media_name_sha1_map.find(name);
-				if(n == NULL)
-					errorstream<<"The server sent a file that has not "
-							<<"been announced."<<std::endl;
+				std::string name = deSerializeString(is);
+				std::string data = deSerializeLongString(is);
+
+				// if name contains illegal characters, ignore the file
+				if(!string_allowed(name, TEXTURENAME_ALLOWED_CHARS))
+				{
+					errorstream<<"Client: ignoring illegal file name "
+							<<"sent by server: \""<<name<<"\""<<std::endl;
+					continue;
+				}
+
+				bool success = loadMedia(data, name);
+				if(success)
+				{
+					verbosestream<<"Client: Loaded received media: "
+							<<"\""<<name<<"\". Caching."<<std::endl;
+				}
 				else
-					m_media_cache.update_sha1(data);
+				{
+					infostream<<"Client: Failed to load received media: "
+							<<"\""<<name<<"\". Not caching."<<std::endl;
+					continue;
+				}
+
+				bool did = fs::CreateAllDirs(getMediaCacheDir());
+				if(!did)
+				{
+					errorstream<<"Could not create media cache directory"
+							<<std::endl;
+				}
+
+				{
+					core::map<std::string, std::string>::Node *n;
+					n = m_media_name_sha1_map.find(name);
+					if(n == NULL)
+						errorstream<<"The server sent a file that has not "
+								<<"been announced."<<std::endl;
+					else
+						m_media_cache.update_sha1(data);
+				}
 			}
 		}
 
@@ -1626,6 +1669,192 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 sender_peer_id)
 		event.type = CE_TEXTURES_UPDATED;
 		m_client_event_queue.push_back(event);
 	}
+	else if(command == TOCLIENT_ANNOUNCE_MESH)
+	{
+		std::string datastring((char*)&data[2], datasize-2);
+		std::istringstream is2(datastring, std::ios_base::binary);
+
+		// Mesh update thread must be stopped while
+		// updating content definitions
+		assert(!m_mesh_update_thread.IsRunning());
+
+		int num_files = readU16(is2);
+		
+		verbosestream<<"Client received TOCLIENT_ANNOUNCE_MESH ("
+				<<num_files<<" files)"<<std::endl;
+		core::list<MeshRequest> file_requests;
+		if(num_files > 0)
+		{
+			std::istringstream tmp_is(deSerializeLongString(is2), std::ios::binary);
+			std::ostringstream tmp_os;
+			decompressZlib(tmp_is, tmp_os);
+			std::istringstream is(tmp_os.str());
+			for(int i=0; i<num_files; i++)
+			{
+				//read file from cache
+				std::string name = deSerializeString(is);
+				std::string sha1_base64 = deSerializeString(is);
+
+				// if name contains illegal characters, ignore the file
+				if(!string_allowed(name, TEXTURENAME_ALLOWED_CHARS)){
+					errorstream<<"Client: ignoring illegal file name "
+							<<"sent by server: \""<<name<<"\""<<std::endl;
+					continue;
+				}
+
+				std::string sha1_raw = base64_decode(sha1_base64);
+				std::string sha1_hex = hex_encode(sha1_raw);
+				std::ostringstream tmp_os(std::ios_base::binary);
+				bool found_in_cache = m_mesh_cache.load_sha1(sha1_raw, tmp_os);
+				m_mesh_name_sha1_map.set(name, sha1_raw);
+
+				// If found in cache, try to load it from there
+				if(found_in_cache)
+				{
+					bool success = loadMeshes(tmp_os.str(), name);
+					if(success)
+					{
+						verbosestream<<"Client: Loaded cached meshes: "
+								<<sha1_hex<<" \""<<name<<"\""<<std::endl;
+						continue;
+					}
+					else
+					{
+						infostream<<"Client: Failed to load cached meshes: "
+								<<sha1_hex<<" \""<<name<<"\""<<std::endl;
+					}
+				}
+				// Didn't load from cache; queue it to be requested
+				verbosestream<<"Client: Adding file to request list: \""
+						<<sha1_hex<<" \""<<name<<"\""<<std::endl;
+				file_requests.push_back(MeshRequest(name));
+			}
+		}
+
+		ClientEvent event;
+		event.type = CE_MESHES_UPDATED;
+		m_client_event_queue.push_back(event);
+
+		/*
+			u16 command
+			u16 number of files requested
+			for each file {
+				u16 length of name
+				string name
+			}
+		*/
+		std::ostringstream os(std::ios_base::binary);
+		writeU16(os, TOSERVER_REQUEST_MESH);
+		writeU16(os, file_requests.size());
+
+		for(core::list<MeshRequest>::Iterator i = file_requests.begin();
+				i != file_requests.end(); i++) {
+			os<<serializeString(i->name);
+		}
+
+		// Make data buffer
+		std::string s = os.str();
+		SharedBuffer<u8> data((u8*)s.c_str(), s.size());
+		// Send as reliable
+		Send(0, data, true);
+		infostream<<"Client: Sending mesh request list to server ("
+				<<file_requests.size()<<" files)"<<std::endl;
+	}
+	else if(command == TOCLIENT_MESH)
+	{
+		std::string datastring((char*)&data[2], datasize-2);
+		std::istringstream is2(datastring, std::ios_base::binary);
+
+		// Mesh update thread must be stopped while
+		// updating content definitions
+		assert(!m_mesh_update_thread.IsRunning());
+
+		/*
+			u16 command
+			u16 total number of file bunches
+			u16 index of this bunch
+			u32 number of files in this bunch
+			for each file {
+				u16 length of name
+				string name
+				u32 length of data
+				data
+			}
+		*/
+		int num_bunches = readU16(is2);
+		int bunch_i = readU16(is2);
+		if(num_bunches >= 2)
+		{
+			m_mesh_receive_progress = (float)bunch_i / (float)(num_bunches - 1);
+		}
+		else
+		{
+			m_mesh_receive_progress = 1.0;
+		}
+		if(bunch_i == num_bunches - 1)
+		{
+			m_meshes_received = true;
+		}
+		int num_files = readU32(is2);
+		if(num_files >= 1)
+		{
+			std::istringstream tmp_is(deSerializeLongString(is2), std::ios::binary);
+			std::ostringstream tmp_os;
+			decompressZlib(tmp_is, tmp_os);
+			std::istringstream is(tmp_os.str());
+			infostream<<"Client: Received files: bunch "<<bunch_i<<"/"
+					<<num_bunches<<" files="<<num_files
+					<<" size="<<datasize<<std::endl;
+			for(int i=0; i<num_files; i++)
+			{
+				std::string name = deSerializeString(is);
+				std::string data = deSerializeLongString(is);
+
+				// if name contains illegal characters, ignore the file
+				if(!string_allowed(name, TEXTURENAME_ALLOWED_CHARS))
+				{
+					errorstream<<"Client: ignoring illegal file name "
+							<<"sent by server: \""<<name<<"\""<<std::endl;
+					continue;
+				}
+
+				bool success = loadMeshes(data, name);
+				if(success)
+				{
+					verbosestream<<"Client: Loaded received meshes: "
+							<<"\""<<name<<"\". Caching."<<std::endl;
+				}
+				else
+				{
+					infostream<<"Client: Failed to load received meshes: "
+							<<"\""<<name<<"\". Not caching."<<std::endl;
+					continue;
+				}
+
+				bool did = fs::CreateAllDirs(getMeshCacheDir());
+				if(!did)
+				{
+					errorstream<<"Could not create mesh cache directory"
+							<<std::endl;
+				}
+
+				{
+					core::map<std::string, std::string>::Node *n;
+					n = m_mesh_name_sha1_map.find(name);
+					if(n == NULL)
+						errorstream<<"The server sent a file that has not "
+								<<"been announced."<<std::endl;
+					else
+						m_mesh_cache.update_sha1(data);
+				}
+			}
+		}
+
+		ClientEvent event;
+		event.type = CE_MESHES_UPDATED;
+		m_client_event_queue.push_back(event);
+	}
+
 	else if(command == TOCLIENT_TOOLDEF)
 	{
 		infostream<<"Client: WARNING: Ignoring TOCLIENT_TOOLDEF"<<std::endl;

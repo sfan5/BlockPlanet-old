@@ -2282,6 +2282,9 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 		
 		// Send media announcement
 		sendMediaAnnouncement(peer_id);
+
+		// Send mesh announcement
+		//sendMeshAnnouncement(peer_id);
 		
 		// Send privileges
 		SendPlayerPrivileges(peer_id);
@@ -2926,7 +2929,8 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 		// ActiveObject is added to environment in AsyncRunStep after
 		// the previous addition has been succesfully removed
 	}
-	else if(command == TOSERVER_REQUEST_MEDIA) {
+	else if(command == TOSERVER_REQUEST_MEDIA)
+	{
 		std::string datastring((char*)&data[2], datasize-2);
 		std::istringstream is(datastring, std::ios_base::binary);
 		
@@ -2945,6 +2949,31 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 		}
 
 		sendRequestedMedia(peer_id, tosend);
+
+		// Now the client should know about everything
+		// (definitions and files)
+		getClient(peer_id)->definitions_sent = true;
+	}
+	else if(command == TOSERVER_REQUEST_MESH)
+	{
+		std::string datastring((char*)&data[2], datasize-2);
+		std::istringstream is(datastring, std::ios_base::binary);
+		
+		core::list<MeshRequest> tosend;
+		u16 numfiles = readU16(is);
+
+		infostream<<"Sending "<<numfiles<<" files to "
+				<<getPlayerName(peer_id)<<std::endl;
+		verbosestream<<"TOSERVER_REQUEST_MESH: "<<std::endl;
+
+		for(int i = 0; i < numfiles; i++) {
+			std::string name = deSerializeString(is);
+			tosend.push_back(MeshRequest(name));
+			verbosestream<<"TOSERVER_REQUEST_MESH: requested file "
+					<<name<<std::endl;
+		}
+
+		sendRequestedMesh(peer_id, tosend);
 
 		// Now the client should know about everything
 		// (definitions and files)
@@ -4219,7 +4248,7 @@ void Server::sendMediaAnnouncement(u16 peer_id)
 	*/
 	
 	writeU16(os, TOCLIENT_ANNOUNCE_MEDIA);
-	writeU16(tmp_os, file_announcements.size());
+	writeU16(os, file_announcements.size());
 
 	for(core::list<SendableMediaAnnouncement>::Iterator
 			j = file_announcements.begin();
@@ -4347,9 +4376,9 @@ void Server::sendRequestedMedia(u16 peer_id,
 		*/
 
 		writeU16(os, TOCLIENT_MEDIA);
-		writeU16(tmp_os, num_bunches);
-		writeU16(tmp_os, i);
-		writeU32(tmp_os, file_bunches[i].size());
+		writeU16(os, num_bunches);
+		writeU16(os, i);
+		writeU32(os, file_bunches[i].size());
 
 		for(core::list<SendableMedia>::Iterator
 				j = file_bunches[i].begin();
@@ -4364,6 +4393,305 @@ void Server::sendRequestedMedia(u16 peer_id,
 		os<<serializeLongString(tmp_os2.str());
 		std::string s = os.str();
 		verbosestream<<"Server::sendRequestedMedia(): bunch "
+				<<i<<"/"<<num_bunches
+				<<" files="<<file_bunches[i].size()
+				<<" size=" <<s.size()<<std::endl;
+		SharedBuffer<u8> data((u8*)s.c_str(), s.size());
+		// Send as reliable
+		m_con.Send(peer_id, 0, data, true);
+	}
+}
+
+void Server::fillMeshCache()
+{
+	DSTACK(__FUNCTION_NAME);
+
+	infostream<<"Server: Calculating mesh file checksums"<<std::endl;
+	
+	// Collect all media file paths
+	std::list<std::string> paths;
+	for(core::list<ModSpec>::Iterator i = m_mods.begin();
+			i != m_mods.end(); i++){
+		const ModSpec &mod = *i;
+		paths.push_back(mod.path + DIR_DELIM + "meshes");
+		paths.push_back(mod.path + DIR_DELIM + "meshtextures");
+	}
+	
+	// Collect media file information from paths into cache
+	for(std::list<std::string>::iterator i = paths.begin();
+			i != paths.end(); i++)
+	{
+		std::string meshpath = *i;
+		std::vector<fs::DirListNode> dirlist = fs::GetDirListing(meshpath);
+		for(u32 j=0; j<dirlist.size(); j++){
+			if(dirlist[j].dir) // Ignode dirs
+				continue;
+			std::string filename = dirlist[j].name;
+			// If name contains illegal characters, ignore the file
+			if(!string_allowed(filename, TEXTURENAME_ALLOWED_CHARS)){
+				infostream<<"Server: ignoring illegal file name: \""
+						<<filename<<"\""<<std::endl;
+				continue;
+			}
+			// If name is not in a supported format, ignore it
+			const char *supported_ext[] = {
+				".png", ".jpg", ".bmp", ".tga",
+				".pcx", ".ppm", ".psd", ".wal", ".rgb",
+				".obj", ".3ds", ".md2", ".md3",
+				".b3d", ".ply", ".stl",
+				NULL
+			};
+			if(removeStringEnd(filename, supported_ext) == ""){
+				infostream<<"Server: ignoring unsupported file extension: \""
+						<<filename<<"\""<<std::endl;
+				continue;
+			}
+			// Ok, attempt to load the file and add to cache
+			std::string filepath = meshpath + DIR_DELIM + filename;
+			// Read data
+			std::ifstream fis(filepath.c_str(), std::ios_base::binary);
+			if(fis.good() == false){
+				errorstream<<"Server::fillMeshCache(): Could not open \""
+						<<filename<<"\" for reading"<<std::endl;
+				continue;
+			}
+			std::ostringstream tmp_os(std::ios_base::binary);
+			bool bad = false;
+			for(;;){
+				char buf[1024];
+				fis.read(buf, 1024);
+				std::streamsize len = fis.gcount();
+				tmp_os.write(buf, len);
+				if(fis.eof())
+					break;
+				if(!fis.good()){
+					bad = true;
+					break;
+				}
+			}
+			if(bad){
+				errorstream<<"Server::fillMeshCache(): Failed to read \""
+						<<filename<<"\""<<std::endl;
+				continue;
+			}
+			if(tmp_os.str().length() == 0){
+				errorstream<<"Server::fillMeshCache(): Empty file \""
+						<<filepath<<"\""<<std::endl;
+				continue;
+			}
+
+			SHA1 sha1;
+			sha1.addBytes(tmp_os.str().c_str(), tmp_os.str().length());
+
+			unsigned char *digest = sha1.getDigest();
+			std::string sha1_base64 = base64_encode(digest, 20);
+			std::string sha1_hex = hex_encode((char*)digest, 20);
+			free(digest);
+
+			// Put in list
+			this->m_mesh[filename] = MeshInfo(filepath, sha1_base64);
+			verbosestream<<"Server: "<<sha1_hex<<" is "<<filename<<std::endl;
+		}
+	}
+}
+
+struct SendableMeshAnnouncement
+{
+	std::string name;
+	std::string sha1_digest;
+
+	SendableMeshAnnouncement(const std::string name_="",
+			const std::string sha1_digest_=""):
+		name(name_),
+		sha1_digest(sha1_digest_)
+	{}
+};
+
+void Server::sendMeshAnnouncement(u16 peer_id)
+{
+	DSTACK(__FUNCTION_NAME);
+
+	verbosestream<<"Server: Announcing 3D files to id("<<peer_id<<")"
+			<<std::endl;
+
+	core::list<SendableMeshAnnouncement> file_announcements;
+
+	for(std::map<std::string, MeshInfo>::iterator i = m_mesh.begin();
+			i != m_mesh.end(); i++){
+		// Put in list
+		file_announcements.push_back(
+				SendableMeshAnnouncement(i->first, i->second.sha1_digest));
+	}
+
+	// Make packet
+	std::ostringstream os(std::ios_base::binary);
+	std::ostringstream tmp_os(std::ios_base::binary);
+
+	/*
+		u16 command
+		u32 number of files
+		for each texture {
+			u16 length of name
+			string name
+			u16 length of sha1_digest
+			string sha1_digest
+		}
+	*/
+	
+	writeU16(os, TOCLIENT_ANNOUNCE_MESH);
+	writeU16(tmp_os, file_announcements.size());
+
+	for(core::list<SendableMeshAnnouncement>::Iterator
+			j = file_announcements.begin();
+			j != file_announcements.end(); j++){
+		tmp_os<<serializeString(j->name);
+		tmp_os<<serializeString(j->sha1_digest);
+	}
+
+	// Make data buffer
+	std::ostringstream tmp_os2(std::ios::binary);
+	compressZlib(tmp_os.str(), tmp_os2);
+	os<<serializeLongString(tmp_os2.str());
+	std::string s = os.str();
+	SharedBuffer<u8> data((u8*)s.c_str(), s.size());
+
+	// Send as reliable
+	m_con.Send(peer_id, 0, data, true);
+
+}
+
+struct SendableMesh
+{
+	std::string name;
+	std::string path;
+	std::string data;
+
+	SendableMesh(const std::string &name_="", const std::string path_="",
+			const std::string &data_=""):
+		name(name_),
+		path(path_),
+		data(data_)
+	{}
+};
+
+void Server::sendRequestedMesh(u16 peer_id,
+		const core::list<MeshRequest> &tosend)
+{
+	DSTACK(__FUNCTION_NAME);
+
+	verbosestream<<"Server::sendRequestedMesh(): "
+			<<"Sending files to client"<<std::endl;
+
+	/* Read files */
+
+	// Put 5kB in one bunch (this is not accurate)
+	u32 bytes_per_bunch = 5000;
+
+	core::array< core::list<SendableMesh> > file_bunches;
+	file_bunches.push_back(core::list<SendableMesh>());
+
+	u32 file_size_bunch_total = 0;
+
+	for(core::list<MeshRequest>::ConstIterator i = tosend.begin();
+			i != tosend.end(); i++)
+	{
+		if(m_mesh.find(i->name) == m_mesh.end())
+		{
+			errorstream<<"Server::sendRequestedMesh(): Client asked for "
+					<<"unknown file \""<<(i->name)<<"\""<<std::endl;
+			continue;
+		}
+
+		//TODO get path + name
+		std::string tpath = m_mesh[(*i).name].path;
+
+		// Read data
+		std::ifstream fis(tpath.c_str(), std::ios_base::binary);
+		if(fis.good() == false)
+		{
+			errorstream<<"Server::sendRequestedMesh(): Could not open \""
+					<<tpath<<"\" for reading"<<std::endl;
+			continue;
+		}
+		std::ostringstream tmp_os(std::ios_base::binary);
+		bool bad = false;
+		for(;;)
+		{
+			char buf[1024];
+			fis.read(buf, 1024);
+			std::streamsize len = fis.gcount();
+			tmp_os.write(buf, len);
+			file_size_bunch_total += len;
+			if(fis.eof())
+			{
+				break;
+			}
+			if(!fis.good())
+			{
+				bad = true;
+				break;
+			}
+		}
+		if(bad)
+		{
+			errorstream<<"Server::sendRequestedMesh(): Failed to read \""
+					<<(*i).name<<"\""<<std::endl;
+			continue;
+		}
+		/*infostream<<"Server::sendRequestedMesh(): Loaded \""
+				<<tname<<"\""<<std::endl;*/
+		// Put in list
+		file_bunches[file_bunches.size()-1].push_back(
+				SendableMesh((*i).name, tpath, tmp_os.str()));
+
+		// Start next bunch if got enough data
+		if(file_size_bunch_total >= bytes_per_bunch)
+		{
+			file_bunches.push_back(core::list<SendableMesh>());
+			file_size_bunch_total = 0;
+		}
+
+	}
+
+	/* Create and send packets */
+
+	u32 num_bunches = file_bunches.size();
+	for(u32 i=0; i<num_bunches; i++)
+	{
+		std::ostringstream os(std::ios_base::binary);
+		std::ostringstream tmp_os(std::ios_base::binary);
+
+		/*
+			u16 command
+			u16 total number of texture bunches
+			u16 index of this bunch
+			u32 number of files in this bunch
+			for each file {
+				u16 length of name
+				string name
+				u32 length of data
+				data
+			}
+		*/
+
+		writeU16(os, TOCLIENT_MESH);
+		writeU16(tmp_os, num_bunches);
+		writeU16(tmp_os, i);
+		writeU32(tmp_os, file_bunches[i].size());
+
+		for(core::list<SendableMesh>::Iterator
+				j = file_bunches[i].begin();
+				j != file_bunches[i].end(); j++){
+			tmp_os<<serializeString(j->name);
+			tmp_os<<serializeLongString(j->data);
+		}
+
+		// Make data buffer
+		std::ostringstream tmp_os2(std::ios::binary);
+		compressZlib(tmp_os.str(), tmp_os2);
+		os<<serializeLongString(tmp_os2.str());
+		std::string s = os.str();
+		verbosestream<<"Server::sendRequestedMesh(): bunch "
 				<<i<<"/"<<num_bunches
 				<<" files="<<file_bunches[i].size()
 				<<" size=" <<s.size()<<std::endl;
