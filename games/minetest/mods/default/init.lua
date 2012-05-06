@@ -688,11 +688,11 @@ end
 function default.node_sound_stone_defaults(table)
 	table = table or {}
 	table.footstep = table.footstep or
-			{name="wood", gain=0.25}
+			{name="stone", gain=0.2}
 	table.dig = table.dig or
-			{name="wood", gain=0.9}
+			{name="stone", gain=0.5}
 	table.dug = table.dug or
-			{name="wood", gain=1.5}
+			{name="stone", gain=1.0}
 	default.node_sound_defaults(table)
 	return table
 end
@@ -700,11 +700,11 @@ end
 function default.node_sound_dirt_defaults(table)
 	table = table or {}
 	table.footstep = table.footstep or
-			{name="grass", gain=0.25}
+			{name="grass", gain=0.2}
 	table.dig = table.dig or
-			{name="grass", gain=0.9}
+			{name="grass", gain=0.5}
 	table.dug = table.dug or
-			{name="grass", gain=1.5}
+			{name="grass", gain=1.0}
 	default.node_sound_defaults(table)
 	return table
 end
@@ -724,11 +724,11 @@ end
 function default.node_sound_wood_defaults(table)
 	table = table or {}
 	table.footstep = table.footstep or
-			{name="wood", gain=0.25}
+			{name="wood", gain=0.2}
 	table.dig = table.dig or
-			{name="wood", gain=0.9}
+			{name="wood", gain=0.5}
 	table.dug = table.dug or
-			{name="wood", gain=1.5}
+			{name="wood", gain=1.0}
 	default.node_sound_defaults(table)
 	return table
 end
@@ -736,11 +736,11 @@ end
 function default.node_sound_leaves_defaults(table)
 	table = table or {}
 	table.footstep = table.footstep or
-			{name="grass", gain=0.25}
+			{name="grass", gain=0.2}
 	table.dig = table.dig or
-			{name="grass", gain=0.9}
+			{name="grass", gain=0.5}
 	table.dug = table.dug or
-			{name="grass", gain=1.5}
+			{name="grass", gain=1.0}
 	default.node_sound_defaults(table)
 	return table
 end
@@ -748,11 +748,11 @@ end
 function default.node_sound_glass_defaults(table)
 	table = table or {}
 	table.footstep = table.footstep or
-			{name="wood", gain=0.25}
+			{name="wood", gain=0.2}
 	table.dig = table.dig or
-			{name="wood", gain=0.9}
+			{name="wood", gain=0.5}
 	table.dug = table.dug or
-			{name="glass_shatter", gain=1.5}
+			{name="glass_shatter", gain=1.0}
 	default.node_sound_defaults(table)
 	return table
 end
