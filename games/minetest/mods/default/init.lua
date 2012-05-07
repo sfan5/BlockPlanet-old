@@ -1226,7 +1226,7 @@ minetest.register_node("default:chest_locked", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
-minetest.register_entity("default:monkey_mob_entity", {
+--[[minetest.register_entity("default:monkey_mob_entity", {
 	description = "The Evil Monkey",
 	textures = {"default_furnace_front.png"},
 	visual = "file",
@@ -1247,7 +1247,7 @@ minetest.register_on_placenode(function(pos, newnode, placer)
 		nodeupdate(pos)
 		minetest.env:add_entity(pos, "default:monkey_mob_entity")
 	end
-end)
+end)]]
 
 minetest.register_node("default:furnace", {
 	description = "Furnace",
