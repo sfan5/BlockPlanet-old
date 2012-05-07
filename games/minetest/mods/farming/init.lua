@@ -1,4 +1,4 @@
-timber_nodenames={"default:papyrus", "default:cactus"}
+timber_nodenames={"default:papyrus", "default:cactus", "default:tree", "default:jungletree"}
 
 minetest.register_on_dignode(function(pos, node)
 	local i=1
