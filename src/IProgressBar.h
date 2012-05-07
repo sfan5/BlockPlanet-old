@@ -1,6 +1,7 @@
 #ifndef IPROGRESSBAR_HEADER
 #define IPROGRESSBAR_HEADER
 #include "common_irrlicht.h"
+#include <string>
 
 using namespace irr;
 using namespace core;
@@ -10,7 +11,7 @@ class IProgressBar : public IGUIElement
 {
 public:
     
-    IProgressBar(IGUIEnvironment * guienv,const core::rect<s32>& rectangle,s32 id=-1,IGUIElement * parent=0, IGUIFont * font=0);
+    IProgressBar(IGUIEnvironment * guienv,const core::rect<s32>& rectangle,s32 id=-1,IGUIElement * parent=0);
     
 
     /*Set percentage in positive percentual (0~100). Please note that a call to this function with others values, will set the progress bar to 0.*/
@@ -21,9 +22,6 @@ public:
 
     /*Allow you to add a "border" into your bar. You MUST specify the size (of course in pixel) of the border. You can also pass a color parameter (Black by default)*/
     void addBorder(irr::s32 size,irr::video::SColor color = irr::video::SColor(255,0,0,0));
-    
-    /*Set the Text of the Progress Bar*/
-    void setText(std::string s);
 
     
     virtual void draw();
@@ -36,13 +34,11 @@ private:
     rect<s32> border; //Border 
     rect<s32> tofill; //Percentage indicator
     rect<s32> empty; //"Empty" indicator
-    std::string text; // Text in the Progress Bar
 
     irr::video::SColor fillcolor;
     irr::video::SColor emptycolor;
     irr::video::SColor bordercolor;
     irr::video::IVideoDriver * vdriver;
-    irr::gui::IGUIFont * textfont;
     
 };
 #endif

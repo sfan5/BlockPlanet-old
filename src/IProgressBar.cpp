@@ -1,11 +1,10 @@
 #include "IProgressBar.h"
 
-IProgressBar::IProgressBar(IGUIEnvironment * guienv,const core::rect<s32>& rectangle,s32 id,IGUIElement * parent, IGUIFont * font) : IGUIElement(EGUIET_ELEMENT,guienv,parent,id,rectangle)
+IProgressBar::IProgressBar(IGUIEnvironment * guienv,const core::rect<s32>& rectangle,s32 id,IGUIElement * parent) : IGUIElement(EGUIET_ELEMENT,guienv,parent,id,rectangle)
 {
     total = rectangle.LowerRightCorner.X - rectangle.UpperLeftCorner.X;
     gui = guienv;
     bar = rectangle;
-    textfont = font;
 
     if(parent == 0)
         guienv->getRootGUIElement()->addChild(this); //Ensure that draw method is called
@@ -14,16 +13,11 @@ IProgressBar::IProgressBar(IGUIEnvironment * guienv,const core::rect<s32>& recta
     emptycolor.set(255,0,0,0);
     border = bar;
     this->setProgress(0);
-    this->setText("");
 }
 void IProgressBar::setColors(irr::video::SColor progress,irr::video::SColor filling)
 {
     fillcolor = progress;
     emptycolor = filling;
-}
-void setText(std::string s)
-{
-     text = s;
 }
 void IProgressBar::addBorder(irr::s32 size,irr::video::SColor color)
 {
@@ -54,5 +48,4 @@ void IProgressBar::draw()
     vdriver->draw2DRectangle(bordercolor,border);
     vdriver->draw2DRectangle(fillcolor,tofill);
     vdriver->draw2DRectangle(emptycolor,empty);
-    textfont->draw(text, position, video::SColor color, false, true, bar)
 }
