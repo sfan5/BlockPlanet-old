@@ -277,6 +277,7 @@ set(minetest_SRCS
 	filecache.cpp
 	tile.cpp
 	game.cpp
+	IProgressBar.cpp
 )
 
 # Server sources
