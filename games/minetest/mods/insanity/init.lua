@@ -36,4 +36,14 @@ minetest.register_on_newplayer(function(player)
 		player:get_inventory():add_item('main', 'nuke:tnt 99')
 	end
 end)
-
+minetest.register_on_punchnode(function(p, node)
+	if minetest.setting_getbool("insane") then
+		if node.name == "default:dirt" or "default:dirt_with_grass" or "default:stone" or "default:sand" then
+		minetest.env:remove_node(p)
+		minetest.env:add_entity(p, "nuke:tnt")
+		nodeupdate(p)
+		end
+	else
+	    return true
+	end
+end)
