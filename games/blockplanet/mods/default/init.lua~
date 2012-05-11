@@ -806,7 +806,7 @@ minetest.register_node("default:stone_with_iron", {
 
 minetest.register_node("default:dirt_with_grass", {
 	description = "Dirt with grass",
-	tile_images = {"default_grass.png", "default_dirt.png", "default_grass_side.png"},
+	tile_images = {"default_grass.png", "default_dirt.png", "default_dirt.png^default_grass_side.png"},
 	is_ground_content = true,
 	groups = {crumbly=3},
 	drop = 'default:dirt',
