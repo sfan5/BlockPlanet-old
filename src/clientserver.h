@@ -321,6 +321,33 @@ enum ToClientCommand
 	/*
 		u16 command
 	*/
+
+	TOCLIENT_MESH = 0x45,
+	/*
+		u16 command
+		u16 total number of texture bunches
+		u16 index of this bunch
+		u32 number of files in this bunch
+		for each file {
+			u16 length of name
+			string name
+			u32 length of data
+			data
+		}
+	*/
+
+	TOCLIENT_ANNOUNCE_MESH = 0x46,
+
+	/*
+		u16 command
+		u32 number of files
+		for each texture {
+			u16 length of name
+			string name
+			u16 length of sha1_digest
+			string sha1_digest
+		}
+	*/
 };
 
 enum ToServerCommand
@@ -502,6 +529,16 @@ enum ToServerCommand
 	*/
 
 	TOSERVER_REQUEST_MEDIA = 0x40,
+	/*
+		u16 command
+		u16 number of files requested
+		for each file {
+			u16 length of name
+			string name
+		}
+	 */
+
+	 TOSERVER_REQUEST_MESH = 0x41,
 	/*
 		u16 command
 		u16 number of files requested

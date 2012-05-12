@@ -117,6 +117,7 @@ minetest.register_entity("__builtin:item", {
 		local playerfound = false
 		for k, obj in pairs(objs2) do
 			local objpos=obj:getpos()
+			self.object:setacceleration({x=0, y=-10, z=0})
 			if obj:get_player_name() ~= nil and objpos.y >= pos.y-1.25 and objpos.y <= pos.y+.25 then
 				playerfound = true
 				if self.dontbugme == false then

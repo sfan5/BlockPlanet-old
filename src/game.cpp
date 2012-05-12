@@ -68,6 +68,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 #include "event_manager.h"
 #include <list>
+#include "IProgressBar.h"
 
 /*
 	Setting this to 1 enables a special camera mode that forces
@@ -506,7 +507,7 @@ PointedThing getPointedThing(Client *client, v3f player_position,
 */
 /*gui::IGUIStaticText **/
 void draw_load_screen(const std::wstring &text,
-		video::IVideoDriver* driver, gui::IGUIFont* font)
+		video::IVideoDriver* driver, gui::IGUIFont* font, bool end_scene=true)
 {
 	v2u32 screensize = driver->getScreenSize();
 	const wchar_t *loadingtext = text.c_str();
@@ -521,7 +522,7 @@ void draw_load_screen(const std::wstring &text,
 
 	driver->beginScene(true, true, video::SColor(255,0,0,0));
 	guienv->drawAll();
-	driver->endScene();
+	if(end_scene) driver->endScene();
 	
 	guitext->remove();
 	
@@ -1094,10 +1095,27 @@ void the_game(
 			ss<<L" Item definitions\n";
 			ss<<(client.nodedefReceived()?L"[X]":L"[  ]");
 			ss<<L" Node definitions\n";
-			ss<<L"["<<(int)(client.mediaReceiveProgress()*100+0.5)<<L"%] ";
+			//ss<<L"["<<(int)(client.mediaReceiveProgress()*100+0.5)<<L"%] ";
+            if((int)(client.mediaReceiveProgress()*100+0.5) > 90) {
+                ss<<L"[X]";
+            } else {
+                ss<<L"[  ]";
+            }
 			ss<<L" Media\n";
 
-			draw_load_screen(ss.str(), driver, font);
+            v2u32 screensize = driver->getScreenSize();
+            core::vector2d<u32> textsize_u = font->getDimension(ss.str().c_str());
+            core::vector2d<s32> textsize(textsize_u.X,textsize_u.Y);
+            core::vector2d<s32> center(screensize.X/2, screensize.Y/2);
+	    core::rect<s32> progrect(center.X - textsize.X/2, center.Y + textsize.Y/2, center.X + textsize.X/2, center.Y + textsize.Y/2 + screensize.Y/20);
+            IProgressBar * pb = new IProgressBar(guienv,progrect);
+            pb->setProgress((irr::u32)(client.mediaReceiveProgress()*100+0.5));
+            pb->setColors(irr::video::SColor(255,30,200,10), irr::video::SColor(255,10,90,10));
+            pb->drop();
+            
+            draw_load_screen(ss.str(), driver, font, false);
+            driver->endScene();
+            pb->remove();
 			
 			// Delay a bit
 			sleep_ms(1000*frametime);
@@ -2307,8 +2325,8 @@ void the_game(
 				}
 
 				dig_time += dtime;
-
-				camera.setDigging(0);  // left click animation
+				if (digging)
+					camera.setDigging(0);  // left click animation
 			}
 
 			if(input->getRightClicked())
@@ -2416,7 +2434,7 @@ void the_game(
 
 		pointed_old = pointed;
 		
-		if(left_punch || input->getLeftClicked())
+		if((left_punch || input->getLeftClicked()) && digging)
 		{
 			camera.setDigging(0); // left click animation
 		}

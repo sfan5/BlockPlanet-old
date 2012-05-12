@@ -1,4 +1,4 @@
-timber_nodenames={"default:papyrus", "default:cactus"}
+timber_nodenames={"default:papyrus", "default:cactus", "default:tree", "default:jungletree"}
 
 minetest.register_on_dignode(function(pos, node)
 	local i=1
@@ -7,7 +7,7 @@ minetest.register_on_dignode(function(pos, node)
 			np={x=pos.x, y=pos.y+1, z=pos.z}
 			while minetest.env:get_node(np).name==timber_nodenames[i] do
 				minetest.env:remove_node(np)
-				minetest.env:add_item(pos, timber_nodenames[i])
+				minetest.env:add_item(np, timber_nodenames[i])
 				np={x=np.x, y=np.y+1, z=np.z}
 			end
 		end
