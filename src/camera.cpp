@@ -270,7 +270,7 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 	{
 		m_sprinting_fov_state += incr;
 	}*/
-	if(player->sprinting_timer != -10 && player->sprinting_timer != -20)
+	if(player->sprinting_timer != -10 && player->sprinting_timer != -20 && player->sprinting_timer != -30)
 	{
 		m_sprinting_fov_state = 0.3-player->sprinting_timer;
 	}

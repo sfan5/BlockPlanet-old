@@ -46,8 +46,7 @@ Player::Player(IGameDef *gamedef):
 	hp(PLAYER_MAX_HP),
 	hurt_tilt_timer(0),
 	hurt_tilt_timer_max(0),
-	// For now this hack will work
-	sprinting_timer(2.9999),
+	sprinting_timer(-30),
 	enable_sprinting_timer(0),
 	enable_flying_timer(0),
 	hunger(PLAYER_MAX_HUNGER),

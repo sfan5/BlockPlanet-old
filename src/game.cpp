@@ -2887,6 +2887,10 @@ void the_game(
 			{
 				player->sprinting_timer = 0.3;
 			}
+			if(player->sprinting_timer == -30)
+			{
+				player->sprinting_timer = -10;
+			}
 			if(player->sprinting_timer != -10)
 			{
 				if(player->sprinting_timer > 0.0)
@@ -2908,6 +2912,10 @@ void the_game(
 			if(player->sprinting_timer == -10)
 			{
 				player->sprinting_timer = 0;
+			}
+			if(player->sprinting_timer == -30)
+			{
+				player->sprinting_timer = -20;
 			}
 			if(player->sprinting_timer != -20)
 			{
