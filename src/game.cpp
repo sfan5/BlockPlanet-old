@@ -1107,11 +1107,10 @@ void the_game(
             core::vector2d<u32> textsize_u = font->getDimension(ss.str().c_str());
             core::vector2d<s32> textsize(textsize_u.X,textsize_u.Y);
             core::vector2d<s32> center(screensize.X/2, screensize.Y/2);
-            core::rect<s32> progrect(center - textsize/2, center + textsize/2);
+	    core::rect<s32> progrect(center.X - textsize.X/2, center.Y + textsize.Y/2, center.X + textsize.X/2, center.Y + textsize.Y/2 + screensize.Y/20);
             IProgressBar * pb = new IProgressBar(guienv,progrect);
             pb->setProgress((irr::u32)(client.mediaReceiveProgress()*100+0.5));
-            pb->addBorder(2, irr::video::SColor(255,105,105,105));
-            pb->setColors(irr::video::SColor(255,19,136,8), irr::video::SColor(255,128,128,128));
+            pb->setColors(irr::video::SColor(255,30,200,10), irr::video::SColor(255,10,90,10));
             pb->drop();
             
             draw_load_screen(ss.str(), driver, font, false);
@@ -2326,8 +2325,8 @@ void the_game(
 				}
 
 				dig_time += dtime;
-
-				camera.setDigging(0);  // left click animation
+				if (digging)
+					camera.setDigging(0);  // left click animation
 			}
 
 			if(input->getRightClicked())
@@ -2435,7 +2434,7 @@ void the_game(
 
 		pointed_old = pointed;
 		
-		if(left_punch || input->getLeftClicked())
+		if((left_punch || input->getLeftClicked()) && digging)
 		{
 			camera.setDigging(0); // left click animation
 		}
