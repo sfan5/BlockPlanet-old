@@ -804,6 +804,15 @@ minetest.register_node("default:stone_with_iron", {
 	sounds = default.node_sound_stone_defaults(),
 })
 
+minetest.register_node("default:azurite_ore", {
+	description = "Azurite Ore",
+	tile_images = {"azurite.png"},
+	is_ground_content = true,
+	groups = {cracky=3},
+	drop = 'default:azurite_ore',
+	sounds = default.node_sound_stone_defaults(),
+})
+
 minetest.register_node("default:dirt_with_grass", {
 	description = "Dirt with grass",
 	tile_images = {"default_grass.png", "default_dirt.png", "default_grass_side.png"},
