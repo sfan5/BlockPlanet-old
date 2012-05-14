@@ -675,7 +675,7 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				};
 
 				v3f move_torch(0,0,0);
-				int xyrotation = 0;
+				int xyrotation = 180;
 				int yzrotation = 0;
 				for(s32 i=0; i<4; i++)
 				{
@@ -880,7 +880,8 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				p2.X++;
 				MapNode n2 = data->m_vmanip.getNodeNoEx(blockpos_nodes + p2);
 				const ContentFeatures *f2 = &nodedef->get(n2);
-				if(f2->drawtype == NDT_FENCELIKE)
+				//if(f2->drawtype == NDT_FENCELIKE)
+				if(f2->walkable)
 				{
 					aabb3f bar(-bar_len+BS/2,-bar_rad+BS/4,-bar_rad,
 							bar_len+BS/2,bar_rad+BS/4,bar_rad);
@@ -906,7 +907,8 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				p2.Z++;
 				n2 = data->m_vmanip.getNodeNoEx(blockpos_nodes + p2);
 				f2 = &nodedef->get(n2);
-				if(f2->drawtype == NDT_FENCELIKE)
+				//if(f2->drawtype == NDT_FENCELIKE)
+				if(f2->walkable)
 				{
 					aabb3f bar(-bar_rad,-bar_rad+BS/4,-bar_len+BS/2,
 							bar_rad,bar_rad+BS/4,bar_len+BS/2);

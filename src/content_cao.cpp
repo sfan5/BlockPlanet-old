@@ -1342,7 +1342,8 @@ public:
 			//updateLegRot(dtime);
 			//updateNodePos();
 		}
-		else if(m_prop.visual == "cube"){
+		else if(m_prop.visual == "cube")
+		{
 			infostream<<"GenericCAO::addToScene(): cube"<<std::endl;
 			scene::IMesh *mesh = createCubeMesh(v3f(BS,BS,BS));
 			m_meshnode = smgr->addMeshSceneNode(mesh, NULL);
@@ -1353,7 +1354,9 @@ public:
 					m_prop.visual_size.X));
 			u8 li = m_last_light;
 			setMeshColor(m_meshnode->getMesh(), video::SColor(255,li,li,li));
-		} else if(m_prop.visual == "wielditem"){
+		}
+		else if(m_prop.visual == "wielditem")
+		{
 			infostream<<"GenericCAO::addToScene(): node"<<std::endl;
 			infostream<<"textures: "<<m_prop.textures.size()<<std::endl;
 			if(m_prop.textures.size() >= 1){
@@ -1362,7 +1365,7 @@ public:
 				ItemStack item(m_prop.textures[0], 1, 0, "", idef);
 				scene::IMesh *mesh = item.getDefinition(idef).wield_mesh;
 				m_meshnode = smgr->addMeshSceneNode(mesh, NULL);
-				
+		
 				m_meshnode->setScale(v3f(m_prop.visual_size.X/2,
 						m_prop.visual_size.Y/2,
 						m_prop.visual_size.X/2));
@@ -1391,13 +1394,16 @@ public:
 		updateTextures("");
 		
 		scene::ISceneNode *node = NULL;
-		if(m_spritenode){
+		if(m_spritenode)
+		{
 			node = m_spritenode;
 		}
-		else if(m_meshnode){
+		else if(m_meshnode)
+		{
 			node = m_meshnode;
 		}
-		if(m_is_player && !m_is_local_player && (m_head || node)){
+		if(m_is_player && !m_is_local_player && (m_head || node))
+		{
 			// Add a text node for showing the name
 			gui::IGUIEnvironment* gui = irr->getGUIEnvironment();
 			std::wstring wname = narrow_to_wide(m_name);
