@@ -992,14 +992,9 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				is_mesecon_z_all[0]=is_mesecon_z[0] || is_mesecon_z_minus_y[0] || is_mesecon_z_plus_y[0];
 				is_mesecon_z_all[1]=is_mesecon_z[1] || is_mesecon_z_minus_y[1] || is_mesecon_z_plus_y[1];
 
-				bool is_straight = (is_mesecon_x_all[0] && is_mesecon_x_all[1]) || (is_mesecon_z_all[0] && is_mesecon_z_all[1]);//is really straight, mesecons on both sides
+				bool is_straight = (is_mesecon_x_all[0] && is_mesecon_x_all[1] && !is_mesecon_z_all[1] && !is_mesecon_z_all[0]) || (is_mesecon_z_all[0] && is_mesecon_z_all[1] && !is_mesecon_x_all[1] && !is_mesecon_x_all[0]);//is really straight, mesecons on both sides
 				int adjacencies = is_mesecon_x_all[0] + is_mesecon_x_all[1] + is_mesecon_z_all[0] + is_mesecon_z_all[1];
 
-				if (is_mesecon_x_plus_y[0] || is_mesecon_x_plus_y[1] || is_mesecon_z_plus_y[0] || is_mesecon_z_plus_y[1]) //is straight because sloped
-				{
-					adjacencies = 5; //5 means sloped
-					is_straight = true;
-				}
 
 				// Assign textures
 				u8 tileindex = 0; // straight
@@ -1021,7 +1016,12 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				tile.material_flags &= ~MATERIAL_FLAG_BACKFACE_CULLING;
 				tile.material_flags |= MATERIAL_FLAG_CRACK_OVERLAY;
 
+				TileSpec tile_slope = getNodeTileN(n, p, 0, data);
+				tile.material_flags &= ~MATERIAL_FLAG_BACKFACE_CULLING;
+				tile.material_flags |= MATERIAL_FLAG_CRACK_OVERLAY;
+
 				AtlasPointer ap = tile.texture;
+				AtlasPointer ap_slope = tile_slope.texture;
 				
 				u16 l = getInteriorLight(n, 0, data);
 				video::SColor c = MapBlock_LightColor(255, l);
@@ -1035,25 +1035,53 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 					video::S3DVertex vertices_slope[4] =
 					{
 						video::S3DVertex(BS/2,BS/2+d,BS/2-d, 0,0,0, c,
-								ap.x1(), ap.y1()),
+								ap_slope.x1(), ap_slope.y1()),
 						video::S3DVertex(-BS/2,BS/2+d,BS/2-d, 0,0,0, c,
-								ap.x0(), ap.y1()),
+								ap_slope.x0(), ap_slope.y1()),
 						video::S3DVertex(-BS/2,-BS/2,BS/2-d, 0,0,0, c,
-								ap.x0(), ap.y0()),
+								ap_slope.x0(), ap_slope.y0()),
 						video::S3DVertex(BS/2,-BS/2,BS/2-d, 0,0,0, c,
-								ap.x1(), ap.y0()),
+								ap_slope.x1(), ap_slope.y0()),
 					};
+					video::S3DVertex vertices_slope_xplus1[4];
+					video::S3DVertex vertices_slope_xplus0[4];
+					video::S3DVertex vertices_slope_zplus0[4];
+					video::S3DVertex vertices_slope_zplus1[4];
 					for(s32 i=0; i<4; i++)
 					{
-						if (is_mesecon_x_plus_y[1]) 
-							vertices_slope[i].Pos.rotateXZBy(-90);
-						if (is_mesecon_x_plus_y[0]) 
-							vertices_slope[i].Pos.rotateXZBy(90);
-						if (is_mesecon_z_plus_y[0]) 
-							vertices_slope[i].Pos.rotateXZBy(180);
-						vertices_slope[i].Pos += intToFloat(p, BS);
+						if (is_mesecon_x_plus_y[1])
+						{
+							vertices_slope_xplus1[i] = vertices_slope[i];
+							vertices_slope_xplus1[i].Pos.rotateXZBy(-90);
+						}
+						if (is_mesecon_x_plus_y[0])
+						{
+							vertices_slope_xplus0[i] = vertices_slope[i];
+							vertices_slope_xplus0[i].Pos.rotateXZBy(90);
+						}
+						if (is_mesecon_z_plus_y[0])
+						{
+							vertices_slope_zplus0[i] = vertices_slope[i];
+							vertices_slope_zplus0[i].Pos.rotateXZBy(180);
+						}
+						if (is_mesecon_z_plus_y[1])
+						{
+							vertices_slope_zplus1[i] = vertices_slope[i];
+							vertices_slope_zplus1[i].Pos.rotateXZBy(0);
+						}
+						vertices_slope_xplus1[i].Pos += intToFloat(p, BS);
+						vertices_slope_xplus0[i].Pos += intToFloat(p, BS);
+						vertices_slope_zplus1[i].Pos += intToFloat(p, BS);
+						vertices_slope_zplus0[i].Pos += intToFloat(p, BS);
 					}
-					collector.append(tile, vertices_slope, 4, indices, 6);
+					if (is_mesecon_x_plus_y[1])
+						collector.append(tile, vertices_slope_xplus1, 4, indices, 6);
+					if (is_mesecon_x_plus_y[0])
+						collector.append(tile, vertices_slope_xplus0, 4, indices, 6);
+					if (is_mesecon_z_plus_y[1])
+						collector.append(tile, vertices_slope_zplus1, 4, indices, 6);
+					if (is_mesecon_z_plus_y[0])
+						collector.append(tile, vertices_slope_zplus0, 4, indices, 6);
 				}
 
 				video::S3DVertex vertices[4] =
@@ -1103,16 +1131,6 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 						angle=90;
 					if(!is_mesecon_z_all[1])
 						angle=270;
-				}
-				//adjacencies 4: Crossing
-				if(adjacencies == 5) //sloped
-				{
-					if(is_mesecon_z_plus_y[0])
-						angle = 180;
-					if(is_mesecon_x_plus_y[0])
-						angle = 90;
-					if(is_mesecon_x_plus_y[1])
-						angle = -90;
 				}
 
 				if(angle != 0) {
