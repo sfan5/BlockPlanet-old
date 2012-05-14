@@ -78,7 +78,13 @@ Camera::Camera(scene::ISceneManager* smgr, MapDrawControl& draw_control,
 	m_sprinting_fov_states(5),
 
 	m_digging_anim(0),
-	m_digging_button(-1)
+	m_eating_anim(0),
+	m_digging_button(-1),
+	m_eating_state(false),
+
+	m_eatable(false),
+	m_is_digging(false),
+	m_is_eating(false)
 {
 	//dstream<<__FUNCTION_NAME<<std::endl;
 
@@ -210,7 +216,7 @@ void Camera::step(f32 dtime)
 		}
 	}
 
-	if (m_digging_button != -1)
+	if(m_digging_button != -1)
 	{
 		f32 offset = dtime * 3.5;
 		float m_digging_anim_was = m_digging_anim;
@@ -230,6 +236,25 @@ void Camera::step(f32 dtime)
 				MtEvent *e = new SimpleTriggerEvent("CameraPunchRight");
 				m_gamedef->event()->put(e);
 			}
+		}
+	}
+	if(m_is_eating)
+	{
+		if(m_eating_anim <= -5)
+		{
+			m_eating_state = false;
+		}
+		else if(m_eating_anim >= 5)
+		{
+			m_eating_state = true;
+		}
+		if(m_eating_state == false)
+		{
+			m_eating_anim += 3;
+		}
+		else
+		{
+			m_eating_anim -= 3;
 		}
 	}
 }
@@ -370,7 +395,8 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 	v3f wield_position = v3f(55, -35, 65);
 	//v3f wield_rotation = v3f(-100, 120, -100);
 	v3f wield_rotation = v3f(-100, 120, -100);
-	if(m_digging_anim < 0.05 || m_digging_anim > 0.5){
+	if(m_digging_anim < 0.05 || m_digging_anim > 0.5)
+	{
 		f32 frac = 1.0;
 		if(m_digging_anim > 0.5)
 			frac = 2.0 * (m_digging_anim - 0.5);
@@ -385,22 +411,37 @@ void Camera::update(LocalPlayer* player, f32 frametime, v2u32 screensize,
 		//wield_rotation.X -= frac * 15.0 * pow(ratiothing2, 1.4f);
 		//wield_rotation.Z += frac * 15.0 * pow(ratiothing2, 1.0f);
 	}
-	if (m_digging_button != -1)
+	if(m_digging_button != -1)
 	{
-		f32 digfrac = m_digging_anim;
-		wield_position.X -= 50 * sin(pow(digfrac, 0.7f) * PI);
-		wield_position.Y += 24 * sin(digfrac * 1.8 * PI);
-		wield_position.Z += 25 * 0.5;
+		if(m_digging_button == 0 && m_eatable)
+		{
+			m_is_eating = true;
+			wield_position.X = 0;
+			wield_position.Y = -20 + m_eating_anim;
+			wield_position.Z = 65;
+			wield_rotation.X = 0;
+			wield_rotation.Y = 0;
+			wield_rotation.Z = 0;
+		}
+		else
+		{
+			m_is_eating = false;
+			f32 digfrac = m_digging_anim;
+			wield_position.X -= 50 * sin(pow(digfrac, 0.7f) * PI);
+			wield_position.Y += 24 * sin(digfrac * 1.8 * PI);
+			wield_position.Z += 25 * 0.5;
 
-		// Euler angles are PURE EVIL, so why not use quaternions?
-		core::quaternion quat_begin(wield_rotation * core::DEGTORAD);
-		core::quaternion quat_end(v3f(80, 30, 100) * core::DEGTORAD);
-		core::quaternion quat_slerp;
-		quat_slerp.slerp(quat_begin, quat_end, sin(digfrac * PI));
-		quat_slerp.toEuler(wield_rotation);
-		wield_rotation *= core::RADTODEG;
+			// Euler angles are PURE EVIL, so why not use quaternions?
+			core::quaternion quat_begin(wield_rotation * core::DEGTORAD);
+			core::quaternion quat_end(v3f(80, 30, 100) * core::DEGTORAD);
+			core::quaternion quat_slerp;
+			quat_slerp.slerp(quat_begin, quat_end, sin(digfrac * PI));
+			quat_slerp.toEuler(wield_rotation);
+			wield_rotation *= core::RADTODEG;
+		}
 	}
-	else {
+	else
+	{
 		f32 bobfrac = my_modf(m_view_bobbing_anim);
 		wield_position.X -= sin(bobfrac*PI*2.0) * 3.0;
 		wield_position.Y += sin(my_modf(bobfrac*2.0)*PI) * 3.0;
@@ -573,15 +614,19 @@ void Camera::updateViewingRange(f32 frametime_in)
 	m_frametime_old = frametime;
 }
 
-void Camera::setDigging(s32 button)
+void Camera::setDigging(s32 button, bool digging)
 {
-	if (m_digging_button == -1)
+	if(m_digging_button == -1)
+	{
 		m_digging_button = button;
+	}
+	m_is_digging = digging;
 }
 
 void Camera::wield(const ItemStack &item)
 {
 	IItemDefManager *idef = m_gamedef->idef();
+	m_eatable = item.getDefinition(idef).eatable;
 	scene::IMesh *wield_mesh = item.getDefinition(idef).wield_mesh;
 	if(wield_mesh)
 	{

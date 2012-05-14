@@ -1378,6 +1378,7 @@ minetest.register_node("default:apple", {
 	description = "Apple",
 	drawtype = "plantlike",
 	visual_scale = 1.0,
+	eatable = true,
 	tile_images = {"default_apple.png"},
 	inventory_image = "default_apple.png",
 	paramtype = "light",

@@ -63,6 +63,7 @@ struct ItemDefinition
 	s16 stack_max;
 	bool usable;
 	bool liquids_pointable;
+	bool eatable;
 	// May be NULL. If non-NULL, deleted by destructor
 	ToolCapabilities *tool_capabilities;
 	ItemGroupList groups;

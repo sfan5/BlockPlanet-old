@@ -2325,8 +2325,7 @@ void the_game(
 				}
 
 				dig_time += dtime;
-				if (digging)
-					camera.setDigging(0);  // left click animation
+				camera.setDigging(0, digging);  // left click animation
 			}
 
 			if(input->getRightClicked())
@@ -2379,7 +2378,7 @@ void the_game(
 				else
 				{
 					client.interact(3, pointed);
-					camera.setDigging(1);  // right click animation
+					camera.setDigging(1, digging);  // right click animation
 				}
 			}
 		}
@@ -2434,9 +2433,9 @@ void the_game(
 
 		pointed_old = pointed;
 		
-		if((left_punch || input->getLeftClicked()) && digging)
+		if(left_punch || input->getLeftClicked())
 		{
-			camera.setDigging(0); // left click animation
+			camera.setDigging(0, digging); // left click animation
 		}
 
 		input->resetLeftClicked();

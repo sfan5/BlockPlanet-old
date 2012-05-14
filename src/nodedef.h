@@ -182,6 +182,8 @@ struct ContentFeatures
 	bool climbable;
 	// Player can build on these
 	bool buildable_to;
+	// Player can eat this
+	bool eatable;
 	// Metadata name of node (eg. "furnace")
 	std::string metadata_name;
 	// Whether the node is non-liquid, source liquid or flowing liquid

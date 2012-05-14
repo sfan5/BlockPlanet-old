@@ -983,6 +983,7 @@ static ItemDefinition read_item_definition(lua_State *L, int index)
 	getstringfield(L, index, "description", def.description);
 	getstringfield(L, index, "inventory_image", def.inventory_image);
 	getstringfield(L, index, "wield_image", def.wield_image);
+	getboolfield(L, index, "eatable", def.eatable);
 
 	lua_getfield(L, index, "wield_scale");
 	if(lua_istable(L, -1)){
@@ -1143,6 +1144,8 @@ static ContentFeatures read_content_features(lua_State *L, int index)
 	getboolfield(L, index, "climbable", f.climbable);
 	// Player can build on these
 	getboolfield(L, index, "buildable_to", f.buildable_to);
+	// Player can eat these
+	getboolfield(L, index, "eatable", f.eatable);
 	// Metadata name of node (eg. "furnace")
 	getstringfield(L, index, "metadata_name", f.metadata_name);
 	// Whether the node is non-liquid, source liquid or flowing liquid
