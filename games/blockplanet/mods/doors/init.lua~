@@ -168,26 +168,18 @@ local on_door_punched = function( pos, node, puncher )
 	if ( node.name == 'doors:door_wood_a_c' ) then
 		minetest.env:add_node( pos,  { name = 'doors:door_wood_a_o', param2 = newparam } )
 		minetest.env:add_node( upos, { name = 'doors:door_wood_b_o', param2 = newparam } )
-		minetest.sound_play("door",
-		{pos = pos, gain = 1.0, max_hear_distance = 8,})
 
 	elseif ( node.name == 'doors:door_wood_b_c' ) then
 		minetest.env:add_node( pos,  { name = 'doors:door_wood_b_o', param2 = newparam } )
 		minetest.env:add_node( apos, { name = 'doors:door_wood_a_o', param2 = newparam } )
-		minetest.sound_play("door",
-		{pos = pos, gain = 1.0, max_hear_distance = 8,})
 
 	elseif ( node.name == 'doors:door_wood_a_o' ) then
 		minetest.env:add_node( pos,  { name = 'doors:door_wood_a_c', param2 = newparam } )
 		minetest.env:add_node( upos, { name = 'doors:door_wood_b_c', param2 = newparam } )
-		minetest.sound_play("door",
-		{pos = pos, gain = 1.0, max_hear_distance = 8,})
 
 	elseif ( node.name == 'doors:door_wood_b_o' ) then
 		minetest.env:add_node( pos,  { name = 'doors:door_wood_b_c', param2 = newparam } )
 		minetest.env:add_node( apos, { name = 'doors:door_wood_a_c', param2 = newparam } )
-		minetest.sound_play("door",
-		{pos = pos, gain = 1.0, max_hear_distance = 8,})
 
 	end
 end
