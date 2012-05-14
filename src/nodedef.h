@@ -125,6 +125,7 @@ enum NodeDrawType
 	NDT_PLANTLIKE,
 	NDT_FENCELIKE,
 	NDT_RAILLIKE,
+	NDT_MESECONLIKE, //For the Mesecons mod
 	NDT_NODEBOX,
 };
 
