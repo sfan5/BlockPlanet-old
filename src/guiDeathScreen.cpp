@@ -51,7 +51,6 @@ GUIDeathScreen::~GUIDeathScreen()
 {
 	removeChildren();
 	delete m_respawner;
-	delete m_gamecallback;
 }
 
 void GUIDeathScreen::removeChildren()
