@@ -675,7 +675,7 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				};
 
 				v3f move_torch(0,0,0);
-				int xyrotation = 180;
+				int xyrotation = 0;
 				int yzrotation = 0;
 				for(s32 i=0; i<4; i++)
 				{
@@ -887,7 +887,7 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 							bar_len+BS/2,bar_rad+BS/4,bar_rad);
 					bar.MinEdge += pos;
 					bar.MaxEdge += pos;
-					f32 xrailuv[24]={
+					f32 xrailuv[24] = {
 						0/16.,2/16.,16/16.,4/16.,
 						0/16.,4/16.,16/16.,6/16.,
 						6/16.,6/16.,8/16.,8/16.,
@@ -914,7 +914,7 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 							bar_rad,bar_rad+BS/4,bar_len+BS/2);
 					bar.MinEdge += pos;
 					bar.MaxEdge += pos;
-					f32 zrailuv[24]={
+					f32 zrailuv[24] = {
 						3/16.,1/16.,5/16.,5/16., // cannot rotate; stretch
 						4/16.,1/16.,6/16.,5/16., // for wood texture instead
 						0/16.,9/16.,16/16.,11/16.,
@@ -955,40 +955,64 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				
 				content_t thiscontent = n.getContent();
 				if(n_minus_x.getContent() == thiscontent)
+				{
 					is_mesecon_x[0] = true;
-				if (n_minus_x_minus_y.getContent() == thiscontent)
+				}
+				if(n_minus_x_minus_y.getContent() == thiscontent)
+				{
 					is_mesecon_x_minus_y[0] = true;
+				}
 				if(n_minus_x_plus_y.getContent() == thiscontent)
+				{
 					is_mesecon_x_plus_y[0] = true;
+				}
 
 				if(n_plus_x.getContent() == thiscontent)
+				{
 					is_mesecon_x[1] = true;
-				if (n_plus_x_minus_y.getContent() == thiscontent)
+				}
+				if(n_plus_x_minus_y.getContent() == thiscontent)
+				{
 					is_mesecon_x_minus_y[1] = true;
+				}
 				if(n_plus_x_plus_y.getContent() == thiscontent)
+				{
 					is_mesecon_x_plus_y[1] = true;
+				}
 
 				if(n_minus_z.getContent() == thiscontent)
+				{
 					is_mesecon_z[0] = true;
-				if (n_minus_z_minus_y.getContent() == thiscontent)
+				}
+				if(n_minus_z_minus_y.getContent() == thiscontent)
+				{
 					is_mesecon_z_minus_y[0] = true;
+				}
 				if(n_minus_z_plus_y.getContent() == thiscontent)
+				{
 					is_mesecon_z_plus_y[0] = true;
+				}
 
 				if(n_plus_z.getContent() == thiscontent)
+				{
 					is_mesecon_z[1] = true;
-				if (n_plus_z_minus_y.getContent() == thiscontent)
+				}
+				if(n_plus_z_minus_y.getContent() == thiscontent)
+				{
 					is_mesecon_z_minus_y[1] = true;
+				}
 				if(n_plus_z_plus_y.getContent() == thiscontent)
+				{
 					is_mesecon_z_plus_y[1] = true;
+				}
 
 
 				bool is_mesecon_x_all[] = {false, false};
 				bool is_mesecon_z_all[] = {false, false};
-				is_mesecon_x_all[0]=is_mesecon_x[0] || is_mesecon_x_minus_y[0] || is_mesecon_x_plus_y[0];
-				is_mesecon_x_all[1]=is_mesecon_x[1] || is_mesecon_x_minus_y[1] || is_mesecon_x_plus_y[1];
-				is_mesecon_z_all[0]=is_mesecon_z[0] || is_mesecon_z_minus_y[0] || is_mesecon_z_plus_y[0];
-				is_mesecon_z_all[1]=is_mesecon_z[1] || is_mesecon_z_minus_y[1] || is_mesecon_z_plus_y[1];
+				is_mesecon_x_all[0] = is_mesecon_x[0] || is_mesecon_x_minus_y[0] || is_mesecon_x_plus_y[0];
+				is_mesecon_x_all[1] = is_mesecon_x[1] || is_mesecon_x_minus_y[1] || is_mesecon_x_plus_y[1];
+				is_mesecon_z_all[0] = is_mesecon_z[0] || is_mesecon_z_minus_y[0] || is_mesecon_z_plus_y[0];
+				is_mesecon_z_all[1] = is_mesecon_z[1] || is_mesecon_z_minus_y[1] || is_mesecon_z_plus_y[1];
 
 				bool is_straight = (is_mesecon_x_all[0] && is_mesecon_x_all[1] && !is_mesecon_z_all[1] && !is_mesecon_z_all[0]) || (is_mesecon_z_all[0] && is_mesecon_z_all[1] && !is_mesecon_x_all[1] && !is_mesecon_x_all[0]);//is really straight, mesecons on both sides
 				int adjacencies = is_mesecon_x_all[0] + is_mesecon_x_all[1] + is_mesecon_z_all[0] + is_mesecon_z_all[1];
@@ -1001,14 +1025,22 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				else if(adjacencies == 2)
 				{
 					if(is_straight)
+					{
 						tileindex = 0; // straight
+					}
 					else
+					{
 						tileindex = 1; // curved
+					}
 				}
 				else if(adjacencies == 3)
+				{
 					tileindex = 2; // t-junction
+				}
 				else if(adjacencies == 4)
+				{
 					tileindex = 3; // crossing
+				}
 
 				TileSpec tile = getNodeTileN(n, p, tileindex, data);
 				tile.material_flags &= ~MATERIAL_FLAG_BACKFACE_CULLING;
@@ -1028,7 +1060,7 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 
 				u16 indices[] = {0,1,2,2,3,0};
 
-				if (is_mesecon_x_plus_y[0] || is_mesecon_x_plus_y[1] || is_mesecon_z_plus_y[0] || is_mesecon_z_plus_y[1])
+				if(is_mesecon_x_plus_y[0] || is_mesecon_x_plus_y[1] || is_mesecon_z_plus_y[0] || is_mesecon_z_plus_y[1])
 				{
 					video::S3DVertex vertices_slope[4] =
 					{
@@ -1047,22 +1079,22 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 					video::S3DVertex vertices_slope_zplus1[4];
 					for(s32 i=0; i<4; i++)
 					{
-						if (is_mesecon_x_plus_y[1])
+						if(is_mesecon_x_plus_y[1])
 						{
 							vertices_slope_xplus1[i] = vertices_slope[i];
 							vertices_slope_xplus1[i].Pos.rotateXZBy(-90);
 						}
-						if (is_mesecon_x_plus_y[0])
+						if(is_mesecon_x_plus_y[0])
 						{
 							vertices_slope_xplus0[i] = vertices_slope[i];
 							vertices_slope_xplus0[i].Pos.rotateXZBy(90);
 						}
-						if (is_mesecon_z_plus_y[0])
+						if(is_mesecon_z_plus_y[0])
 						{
 							vertices_slope_zplus0[i] = vertices_slope[i];
 							vertices_slope_zplus0[i].Pos.rotateXZBy(180);
 						}
-						if (is_mesecon_z_plus_y[1])
+						if(is_mesecon_z_plus_y[1])
 						{
 							vertices_slope_zplus1[i] = vertices_slope[i];
 							vertices_slope_zplus1[i].Pos.rotateXZBy(0);
@@ -1072,14 +1104,22 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 						vertices_slope_zplus1[i].Pos += intToFloat(p, BS);
 						vertices_slope_zplus0[i].Pos += intToFloat(p, BS);
 					}
-					if (is_mesecon_x_plus_y[1])
+					if(is_mesecon_x_plus_y[1])
+					{
 						collector.append(tile, vertices_slope_xplus1, 4, indices, 6);
-					if (is_mesecon_x_plus_y[0])
+					}
+					if(is_mesecon_x_plus_y[0])
+					{
 						collector.append(tile, vertices_slope_xplus0, 4, indices, 6);
-					if (is_mesecon_z_plus_y[1])
+					}
+					if(is_mesecon_z_plus_y[1])
+					{
 						collector.append(tile, vertices_slope_zplus1, 4, indices, 6);
-					if (is_mesecon_z_plus_y[0])
+					}
+					if(is_mesecon_z_plus_y[0])
+					{
 						collector.append(tile, vertices_slope_zplus0, 4, indices, 6);
+					}
 				}
 
 				video::S3DVertex vertices[4] =
@@ -1100,7 +1140,9 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				if(adjacencies == 1)
 				{
 					if(is_mesecon_x_all[0] || is_mesecon_x_all[1])
+					{
 						angle = 90;
+					}
 				}
 				if(adjacencies == 2)
 				{
@@ -1110,30 +1152,50 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 					}
 					if(is_mesecon_z_all[0] && is_mesecon_z_all[1])
 					{
-						if (n_minus_z_plus_y.getContent() == thiscontent) angle = 180;
+						if (n_minus_z_plus_y.getContent() == thiscontent)
+						{
+							angle = 180;
+						}
 					}
 					else if(is_mesecon_x_all[0] && is_mesecon_z_all[0])
+					{
 						angle = 270;
+					}
 					else if(is_mesecon_x_all[0] && is_mesecon_z_all[1])
+					{
 						angle = 180;
+					}
 					else if(is_mesecon_x_all[1] && is_mesecon_z_all[1])
+					{
 						angle = 90;
+					}
 				}
 				if(adjacencies == 3)
 				{
 					if(!is_mesecon_x_all[0])
+					{
 						angle=0;
+					}
 					if(!is_mesecon_x_all[1])
+					{
 						angle=180;
+					}
 					if(!is_mesecon_z_all[0])
+					{
 						angle=90;
+					}
 					if(!is_mesecon_z_all[1])
+					{
 						angle=270;
+					}
 				}
 
-				if(angle != 0) {
+				if(angle != 0)
+				{
 					for(u16 i=0; i<4; i++)
+					{
 						vertices[i].Pos.rotateXZBy(angle);
+					}
 				}
 
 				for(s32 i=0; i<4; i++)
@@ -1169,45 +1231,69 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				
 				content_t thiscontent = n.getContent();
 				if(n_minus_x.getContent() == thiscontent)
+				{
 					is_rail_x[0] = true;
-				if (n_minus_x_minus_y.getContent() == thiscontent)
+				}
+				if(n_minus_x_minus_y.getContent() == thiscontent)
+				{
 					is_rail_x_minus_y[0] = true;
+				}
 				if(n_minus_x_plus_y.getContent() == thiscontent)
+				{
 					is_rail_x_plus_y[0] = true;
+				}
 
 				if(n_plus_x.getContent() == thiscontent)
+				{
 					is_rail_x[1] = true;
-				if (n_plus_x_minus_y.getContent() == thiscontent)
+				}
+				if(n_plus_x_minus_y.getContent() == thiscontent)
+				{
 					is_rail_x_minus_y[1] = true;
+				}
 				if(n_plus_x_plus_y.getContent() == thiscontent)
+				{
 					is_rail_x_plus_y[1] = true;
+				}
 
 				if(n_minus_z.getContent() == thiscontent)
+				{
 					is_rail_z[0] = true;
-				if (n_minus_z_minus_y.getContent() == thiscontent)
+				}
+				if(n_minus_z_minus_y.getContent() == thiscontent)
+				{
 					is_rail_z_minus_y[0] = true;
+				}
 				if(n_minus_z_plus_y.getContent() == thiscontent)
+				{
 					is_rail_z_plus_y[0] = true;
+				}
 
 				if(n_plus_z.getContent() == thiscontent)
+				{
 					is_rail_z[1] = true;
-				if (n_plus_z_minus_y.getContent() == thiscontent)
+				}
+				if(n_plus_z_minus_y.getContent() == thiscontent)
+				{
 					is_rail_z_minus_y[1] = true;
+				}
 				if(n_plus_z_plus_y.getContent() == thiscontent)
+				{
 					is_rail_z_plus_y[1] = true;
+				}
 
 
 				bool is_rail_x_all[] = {false, false};
 				bool is_rail_z_all[] = {false, false};
-				is_rail_x_all[0]=is_rail_x[0] || is_rail_x_minus_y[0] || is_rail_x_plus_y[0];
-				is_rail_x_all[1]=is_rail_x[1] || is_rail_x_minus_y[1] || is_rail_x_plus_y[1];
-				is_rail_z_all[0]=is_rail_z[0] || is_rail_z_minus_y[0] || is_rail_z_plus_y[0];
-				is_rail_z_all[1]=is_rail_z[1] || is_rail_z_minus_y[1] || is_rail_z_plus_y[1];
+				is_rail_x_all[0] = is_rail_x[0] || is_rail_x_minus_y[0] || is_rail_x_plus_y[0];
+				is_rail_x_all[1] = is_rail_x[1] || is_rail_x_minus_y[1] || is_rail_x_plus_y[1];
+				is_rail_z_all[0] = is_rail_z[0] || is_rail_z_minus_y[0] || is_rail_z_plus_y[0];
+				is_rail_z_all[1] = is_rail_z[1] || is_rail_z_minus_y[1] || is_rail_z_plus_y[1];
 
 				bool is_straight = (is_rail_x_all[0] && is_rail_x_all[1]) || (is_rail_z_all[0] && is_rail_z_all[1]);//is really straight, rails on both sides
 				int adjacencies = is_rail_x_all[0] + is_rail_x_all[1] + is_rail_z_all[0] + is_rail_z_all[1];
 
-				if (is_rail_x_plus_y[0] || is_rail_x_plus_y[1] || is_rail_z_plus_y[0] || is_rail_z_plus_y[1]) //is straight because sloped
+				if(is_rail_x_plus_y[0] || is_rail_x_plus_y[1] || is_rail_z_plus_y[0] || is_rail_z_plus_y[1]) //is straight because sloped
 				{
 					adjacencies = 5; //5 means sloped
 					is_straight = true;
@@ -1216,18 +1302,28 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				// Assign textures
 				u8 tileindex = 0; // straight
 				if(adjacencies < 2)
+				{
 					tileindex = 0; // straight
+				}
 				else if(adjacencies == 2)
 				{
 					if(is_straight)
+					{
 						tileindex = 0; // straight
+					}
 					else
+					{
 						tileindex = 1; // curved
+					}
 				}
 				else if(adjacencies == 3)
+				{
 					tileindex = 2; // t-junction
+				}
 				else if(adjacencies == 4)
+				{
 					tileindex = 3; // crossing
+				}
 
 				TileSpec tile = getNodeTileN(n, p, tileindex, data);
 				tile.material_flags &= ~MATERIAL_FLAG_BACKFACE_CULLING;
@@ -1241,8 +1337,10 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				float d = (float)BS/64;
 				
 				char g=-1;
-				if (is_rail_x_plus_y[0] || is_rail_x_plus_y[1] || is_rail_z_plus_y[0] || is_rail_z_plus_y[1])
+				if(is_rail_x_plus_y[0] || is_rail_x_plus_y[1] || is_rail_z_plus_y[0] || is_rail_z_plus_y[1])
+				{
 					g=1; //Object is at a slope
+				}
 
 				video::S3DVertex vertices[4] =
 				{
@@ -1263,7 +1361,9 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				if(adjacencies == 1)
 				{
 					if(is_rail_x_all[0] || is_rail_x_all[1])
+					{
 						angle = 90;
+					}
 				}
 				if(adjacencies == 2)
 				{
@@ -1273,40 +1373,66 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 					}
 					if(is_rail_z_all[0] && is_rail_z_all[1])
 					{
-						if (n_minus_z_plus_y.getContent() == thiscontent) angle = 180;
+						if (n_minus_z_plus_y.getContent() == thiscontent)
+						{
+							angle = 180;
+						}
 					}
 					else if(is_rail_x_all[0] && is_rail_z_all[0])
+					{
 						angle = 270;
+					}
 					else if(is_rail_x_all[0] && is_rail_z_all[1])
+					{
 						angle = 180;
+					}
 					else if(is_rail_x_all[1] && is_rail_z_all[1])
+					{
 						angle = 90;
+					}
 				}
 				if(adjacencies == 3)
 				{
 					if(!is_rail_x_all[0])
-						angle=0;
+					{
+						angle = 0;
+					}
 					if(!is_rail_x_all[1])
-						angle=180;
+					{
+						angle = 180;
+					}
 					if(!is_rail_z_all[0])
-						angle=90;
+					{
+						angle = 90;
+					}
 					if(!is_rail_z_all[1])
-						angle=270;
+					{
+						angle = 270;
+					}
 				}
 				//adjacencies 4: Crossing
 				if(adjacencies == 5) //sloped
 				{
 					if(is_rail_z_plus_y[0])
+					{
 						angle = 180;
+					}
 					if(is_rail_x_plus_y[0])
+					{
 						angle = 90;
+					}
 					if(is_rail_x_plus_y[1])
+					{
 						angle = -90;
+					}
 				}
 
-				if(angle != 0) {
+				if(angle != 0)
+				{
 					for(u16 i=0; i<4; i++)
+					{
 						vertices[i].Pos.rotateXZBy(angle);
+					}
 				}
 
 				for(s32 i=0; i<4; i++)
