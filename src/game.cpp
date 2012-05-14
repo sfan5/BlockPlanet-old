@@ -2325,8 +2325,7 @@ void the_game(
 				}
 
 				dig_time += dtime;
-				if (digging)
-					camera.setDigging(0);  // left click animation
+				camera.setDigging(0, digging);  // left click animation
 			}
 
 			if(input->getRightClicked())
@@ -2379,7 +2378,7 @@ void the_game(
 				else
 				{
 					client.interact(3, pointed);
-					camera.setDigging(1);  // right click animation
+					camera.setDigging(1, digging);  // right click animation
 				}
 			}
 		}
@@ -2434,9 +2433,9 @@ void the_game(
 
 		pointed_old = pointed;
 		
-		if((left_punch || input->getLeftClicked()) && digging)
+		if(left_punch || input->getLeftClicked())
 		{
-			camera.setDigging(0); // left click animation
+			camera.setDigging(0, digging); // left click animation
 		}
 
 		input->resetLeftClicked();
@@ -2886,6 +2885,10 @@ void the_game(
 			{
 				player->sprinting_timer = 0.3;
 			}
+			if(player->sprinting_timer == -30)
+			{
+				player->sprinting_timer = -10;
+			}
 			if(player->sprinting_timer != -10)
 			{
 				if(player->sprinting_timer > 0.0)
@@ -2907,6 +2910,10 @@ void the_game(
 			if(player->sprinting_timer == -10)
 			{
 				player->sprinting_timer = 0;
+			}
+			if(player->sprinting_timer == -30)
+			{
+				player->sprinting_timer = -20;
 			}
 			if(player->sprinting_timer != -20)
 			{

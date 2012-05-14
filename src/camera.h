@@ -114,7 +114,8 @@ public:
 
 	// Start digging animation
 	// Pass 0 for left click, 1 for right click
-	void setDigging(s32 button);
+	// Digging is for, well...
+	void setDigging(s32 button, bool digging);
 
 	// Replace the wielded item mesh
 	void wield(const ItemStack &item);
@@ -172,10 +173,16 @@ private:
 
 	// Digging animation frame (0 <= m_digging_anim < 1)
 	f32 m_digging_anim;
+	// Eating animation
+	f32 m_eating_anim;
 	// If -1, no digging animation
 	// If 0, left-click digging animation
 	// If 1, right-click digging animation
 	s32 m_digging_button;
+	bool m_eating_state;
+	bool m_eatable;
+	bool m_is_digging;
+	bool m_is_eating;
 };
 
 #endif

@@ -64,6 +64,7 @@ ItemDefinition& ItemDefinition::operator=(const ItemDefinition &def)
 	stack_max = def.stack_max;
 	usable = def.usable;
 	liquids_pointable = def.liquids_pointable;
+	eatable = def.eatable;
 	if(def.tool_capabilities)
 	{
 		tool_capabilities = new ToolCapabilities(
@@ -108,6 +109,7 @@ void ItemDefinition::reset()
 	stack_max = 99;
 	usable = false;
 	liquids_pointable = false;
+	eatable = false;
 	if(tool_capabilities)
 	{
 		delete tool_capabilities;
@@ -137,6 +139,7 @@ void ItemDefinition::serialize(std::ostream &os) const
 	writeS16(os, stack_max);
 	writeU8(os, usable);
 	writeU8(os, liquids_pointable);
+	writeU8(os, eatable);
 	std::string tool_capabilities_s = "";
 	if(tool_capabilities){
 		std::ostringstream tmp_os(std::ios::binary);
@@ -170,6 +173,7 @@ void ItemDefinition::deSerialize(std::istream &is)
 	stack_max = readS16(is);
 	usable = readU8(is);
 	liquids_pointable = readU8(is);
+	eatable = readU8(is);
 	std::string tool_capabilities_s = deSerializeString(is);
 	if(!tool_capabilities_s.empty())
 	{

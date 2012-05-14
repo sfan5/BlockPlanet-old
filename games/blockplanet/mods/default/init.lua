@@ -29,7 +29,7 @@ minetest.register_item(":", {
 		max_drop_level = 0,
 		groupcaps = {
 			fleshy = {times={[2]=2.00, [3]=1.00}, uses=0, maxlevel=1},
-			crumbly = {times={[2]=3.00, [3]=0.70}, uses=0, maxlevel=1},
+			crumbly = {times={[2]=3.00, [3]=1.40}, uses=0, maxlevel=1},
 			snappy = {times={[3]=0.40}, uses=0, maxlevel=1},
 			oddly_breakable_by_hand = {times={[1]=7.00,[2]=4.00,[3]=1.40}, uses=0, maxlevel=3},
 		}
@@ -96,7 +96,7 @@ minetest.register_tool("default:shovel_wood", {
 	tool_capabilities = {
 		max_drop_level=0,
 		groupcaps={
-			crumbly={times={[1]=3.00, [2]=0.80, [3]=0.50}, uses=10, maxlevel=1}
+			crumbly={times={[1]=3.00, [2]=0.80, [3]=1.00}, uses=10, maxlevel=1}
 		}
 	},
 })
@@ -106,7 +106,7 @@ minetest.register_tool("default:shovel_stone", {
 	tool_capabilities = {
 		max_drop_level=0,
 		groupcaps={
-			crumbly={times={[1]=1.50, [2]=0.50, [3]=0.30}, uses=20, maxlevel=1}
+			crumbly={times={[1]=1.50, [2]=0.50, [3]=0.50}, uses=20, maxlevel=1}
 		}
 	},
 })
@@ -116,7 +116,7 @@ minetest.register_tool("default:shovel_steel", {
 	tool_capabilities = {
 		max_drop_level=1,
 		groupcaps={
-			crumbly={times={[1]=1.50, [2]=0.70, [3]=0.60}, uses=10, maxlevel=2}
+			crumbly={times={[1]=1.50, [2]=0.70, [3]=0.30}, uses=10, maxlevel=2}
 		}
 	},
 })
@@ -804,6 +804,15 @@ minetest.register_node("default:stone_with_iron", {
 	sounds = default.node_sound_stone_defaults(),
 })
 
+minetest.register_node("default:azurite_ore", {
+	description = "Azurite Ore",
+	tile_images = {"azurite.png"},
+	is_ground_content = true,
+	groups = {cracky=3},
+	drop = 'default:azurite_ore',
+	sounds = default.node_sound_stone_defaults(),
+})
+
 minetest.register_node("default:dirt_with_grass", {
 	description = "Dirt with grass",
 	tile_images = {"default_grass.png", "default_dirt.png", "default_grass_side.png"},
@@ -1369,6 +1378,7 @@ minetest.register_node("default:apple", {
 	description = "Apple",
 	drawtype = "plantlike",
 	visual_scale = 1.0,
+	eatable = true,
 	tile_images = {"default_apple.png"},
 	inventory_image = "default_apple.png",
 	paramtype = "light",

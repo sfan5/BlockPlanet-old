@@ -3124,7 +3124,9 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 			{
 				// Skip if object has been removed
 				if(pointed_object->m_removed)
+				{
 					return;
+				}
 
 				actionstream<<player->getName()<<" punches object "
 						<<pointed.object_id<<": "
@@ -3198,7 +3200,9 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 			// Reset build time counter
 			if(pointed.type == POINTEDTHING_NODE &&
 					item.getDefinition(m_itemdef).type == ITEM_NODE)
+			{
 				getClient(peer_id)->m_time_from_building = 0.0;
+			}
 
 			if(pointed.type == POINTEDTHING_OBJECT)
 			{
@@ -3206,7 +3210,9 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 
 				// Skip if object has been removed
 				if(pointed_object->m_removed)
+				{
 					return;
+				}
 
 				actionstream<<player->getName()<<" right-clicks object "
 						<<pointed.object_id<<": "

@@ -91,3 +91,8 @@ stairs.register_stair_and_slab("sandstone", "default:sandstone",
 		{"default_sandstone.png"},
 		"Sandstone stair",
 		"Sandstone slab")
+minetest.register_on_punchnode(function(pos, node, puncher)
+	if node.name == ("stairs:slab_wood") then
+		minetest.env:add_node(pos, {name="default:wood"})
+	end
+end)
