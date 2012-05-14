@@ -586,9 +586,6 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 					tileindex = 0; // floor
 				} else if(dir == v3s16(0,1,0)){
 					tileindex = 1; // ceiling
-				// For backwards compatibility
-				} else if(dir == v3s16(0,0,0)){
-					tileindex = 0; // floor
 				} else {
 					tileindex = 2; // side
 				}
@@ -601,40 +598,144 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 
 				video::SColor c(255,255,255,255);
 
-				// Wall at X+ of node
-				video::S3DVertex vertices[4] =
+				u16 indices[] = {0,1,2,2,3,0};
+
+				//FRONT
+				video::S3DVertex vertices_front[4] =
 				{
-					video::S3DVertex(-BS/2,-BS/2,0, 0,0,0, c,
+					video::S3DVertex(-BS/16,-BS/2,BS/16, 0,0,0, c,
 							ap.x0(), ap.y1()),
-					video::S3DVertex(BS/2,-BS/2,0, 0,0,0, c,
+					video::S3DVertex(BS/16,-BS/2,BS/16, 0,0,0, c,
 							ap.x1(), ap.y1()),
-					video::S3DVertex(BS/2,BS/2,0, 0,0,0, c,
+					video::S3DVertex(BS/10,BS/10,BS/10, 0,0,0, c,
 							ap.x1(), ap.y0()),
-					video::S3DVertex(-BS/2,BS/2,0, 0,0,0, c,
+					video::S3DVertex(-BS/10,BS/10,BS/10, 0,0,0, c,
 							ap.x0(), ap.y0()),
 				};
 
+				//BACK
+				video::S3DVertex vertices_back[4] =
+				{
+					video::S3DVertex(-BS/16,-BS/2,-BS/16, 0,0,0, c,
+							ap.x0(), ap.y1()),
+					video::S3DVertex(BS/16,-BS/2,-BS/16, 0,0,0, c,
+							ap.x1(), ap.y1()),
+					video::S3DVertex(BS/10,BS/10,-BS/10, 0,0,0, c,
+							ap.x1(), ap.y0()),
+					video::S3DVertex(-BS/10,BS/10,-BS/10, 0,0,0, c,
+							ap.x0(), ap.y0()),
+				};
+
+				//RIGHT
+				video::S3DVertex vertices_right[4] =
+				{
+					video::S3DVertex(-BS/16,-BS/2,-BS/16, 0,0,0, c,
+							ap.x0(), ap.y1()),
+					video::S3DVertex(-BS/16,-BS/2,BS/16, 0,0,0, c,
+							ap.x1(), ap.y1()),
+					video::S3DVertex(-BS/10,BS/10,BS/10, 0,0,0, c,
+							ap.x1(), ap.y0()),
+					video::S3DVertex(-BS/10,BS/10,-BS/10, 0,0,0, c,
+							ap.x0(), ap.y0()),
+				};
+
+				//LEFT
+				video::S3DVertex vertices_left[4] =
+				{
+					video::S3DVertex(BS/16,-BS/2,-BS/16, 0,0,0, c,
+							ap.x0(), ap.y1()),
+					video::S3DVertex(BS/16,-BS/2,BS/16, 0,0,0, c,
+							ap.x1(), ap.y1()),
+					video::S3DVertex(BS/10,BS/10,BS/10, 0,0,0, c,
+							ap.x1(), ap.y0()),
+					video::S3DVertex(BS/10,BS/10,-BS/10, 0,0,0, c,
+							ap.x0(), ap.y0()),
+				};
+
+				//TOP
+				video::S3DVertex vertices_top[4] =
+				{
+					video::S3DVertex(BS/10,BS/10,-BS/10, 0,0,0, c,
+							ap.x0(), ap.y0()+0.0014),
+					video::S3DVertex(BS/10,BS/10,BS/10, 0,0,0, c,
+							ap.x1(), ap.y0()+0.0014),
+					video::S3DVertex(-BS/10,BS/10,BS/10, 0,0,0, c,
+							ap.x1(), ap.y0()),
+					video::S3DVertex(-BS/10,BS/10,-BS/10, 0,0,0, c,
+							ap.x0(), ap.y0()),
+				};
+
+				//BOTTOM
+				video::S3DVertex vertices_bottom[4] =
+				{
+					video::S3DVertex(BS/16,-BS/2,-BS/16, 0,0,0, c,
+							ap.x0(), ap.y1()),
+					video::S3DVertex(BS/16,-BS/2,BS/16, 0,0,0, c,
+							ap.x1(), ap.y1()),
+					video::S3DVertex(-BS/16,-BS/2,BS/16, 0,0,0, c,
+							ap.x1(), ap.y0()),
+					video::S3DVertex(-BS/16,-BS/2,-BS/16, 0,0,0, c,
+							ap.x0(), ap.y0()),
+				};
+
+				v3f move_torch(0,0,0);
+				int xyrotation = 0;
+				int yzrotation = 0;
 				for(s32 i=0; i<4; i++)
 				{
-					if(dir == v3s16(1,0,0))
-						vertices[i].Pos.rotateXZBy(0);
-					if(dir == v3s16(-1,0,0))
-						vertices[i].Pos.rotateXZBy(180);
-					if(dir == v3s16(0,0,1))
-						vertices[i].Pos.rotateXZBy(90);
-					if(dir == v3s16(0,0,-1))
-						vertices[i].Pos.rotateXZBy(-90);
-					if(dir == v3s16(0,-1,0))
-						vertices[i].Pos.rotateXZBy(45);
 					if(dir == v3s16(0,1,0))
-						vertices[i].Pos.rotateXZBy(-45);
+					{
+						xyrotation = 180;
+					}
+					if(dir == v3s16(0,0,1))
+					{
+						yzrotation= -45;
+						move_torch = v3f(0,0,0.2*BS);
+					}
+					if(dir == v3s16(0,0,-1))
+					{
+						yzrotation= 45;
+						move_torch = v3f(0,0,-0.2*BS);
+					}
+					if(dir == v3s16(1,0,0))
+					{
+						xyrotation= 45;
+						move_torch = v3f(0.2*BS,0,0);
+					}
+					if(dir == v3s16(-1,0,0))
+					{
+						xyrotation= -45;
+						move_torch = v3f(-0.2*BS,0,0);
+					}
+					
+					vertices_front[i].Pos.rotateXYBy(xyrotation);
+					vertices_back[i].Pos.rotateXYBy(xyrotation);
+					vertices_left[i].Pos.rotateXYBy(xyrotation);
+					vertices_right[i].Pos.rotateXYBy(xyrotation);
+					vertices_top[i].Pos.rotateXYBy(xyrotation);
+					vertices_bottom[i].Pos.rotateXYBy(xyrotation);
 
-					vertices[i].Pos += intToFloat(p, BS);
+					vertices_front[i].Pos.rotateYZBy(yzrotation);
+					vertices_back[i].Pos.rotateYZBy(yzrotation);
+					vertices_left[i].Pos.rotateYZBy(yzrotation);
+					vertices_right[i].Pos.rotateYZBy(yzrotation);
+					vertices_top[i].Pos.rotateYZBy(yzrotation);
+					vertices_bottom[i].Pos.rotateYZBy(yzrotation);
+
+					vertices_front[i].Pos += intToFloat(p, BS) + move_torch;
+					vertices_back[i].Pos += intToFloat(p, BS) + move_torch;
+					vertices_left[i].Pos += intToFloat(p, BS) + move_torch;
+					vertices_right[i].Pos += intToFloat(p, BS) + move_torch;
+					vertices_top[i].Pos += intToFloat(p, BS) + move_torch;
+					vertices_bottom[i].Pos += intToFloat(p, BS) + move_torch;
+					move_torch = v3f(0,0,0);
 				}
-
-				u16 indices[] = {0,1,2,2,3,0};
-				// Add to mesh collector
-				collector.append(tile, vertices, 4, indices, 6);
+				collector.append(tile, vertices_front, 4, indices, 6);
+				collector.append(tile, vertices_back, 4, indices, 6);
+				collector.append(tile, vertices_left, 4, indices, 6);
+				collector.append(tile, vertices_right, 4, indices, 6);
+				collector.append(tile, vertices_top, 4, indices, 6);
+				collector.append(tile, vertices_bottom, 4, indices, 6);
 				break;
 			}
 			case NDT_SIGNLIKE:

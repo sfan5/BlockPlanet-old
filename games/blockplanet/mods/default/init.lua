@@ -1170,7 +1170,7 @@ minetest.register_node("default:lava_source", {
 minetest.register_node("default:torch", {
 	description = "Torch",
 	drawtype = "torchlike",
-	tile_images = {"default_torch_on_floor.png", "default_torch_on_ceiling.png", "default_torch.png"},
+	tile_images = {"default_torch.png"},
 	inventory_image = "default_torch_on_floor.png",
 	wield_image = "default_torch_on_floor.png",
 	paramtype = "light",
@@ -1523,13 +1523,14 @@ minetest.register_entity("default:falling_node", {
 	on_activate = function(self, staticdata)
 		self.nodename = staticdata
 		self.object:set_armor_groups({immortal=1})
-		--self.object:setacceleration({x=0, y=-10, z=0})
+		self.object:setacceleration({x=0, y=-10, z=0})
 		self:set_node(self.nodename)
 	end,
 
 	on_step = function(self, dtime)
 		-- Set gravity
-		self.object:setacceleration({x=0, y=-10, z=0})
+		--self.object:setvelocity({x=0, y=0, z=0})
+		--self.object:setacceleration({x=0, y=-10, z=0})
 		-- Turn to actual sand when collides to ground or just move
 		local pos = self.object:getpos()
 		local bcp = {x=pos.x, y=pos.y-0.7, z=pos.z} -- Position of bottom center point
