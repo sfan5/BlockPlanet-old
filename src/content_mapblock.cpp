@@ -580,21 +580,17 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 			case NDT_TORCHLIKE:
 			{
 				v3s16 dir = n.getWallMountedDir(nodedef);
-				
-				u8 tileindex = 0;
-				if(dir == v3s16(0,-1,0)){
-					tileindex = 0; // floor
-				} else if(dir == v3s16(0,1,0)){
-					tileindex = 1; // ceiling
-				} else {
-					tileindex = 2; // side
-				}
 
-				TileSpec tile = getNodeTileN(n, p, tileindex, data);
+				TileSpec tile = getNodeTileN(n, p, 0, data);
+				tile.material_flags &= ~MATERIAL_FLAG_BACKFACE_CULLING;
+				tile.material_flags |= MATERIAL_FLAG_CRACK_OVERLAY;
+
+				TileSpec tile_top = getNodeTileN(n, p, 1, data);
 				tile.material_flags &= ~MATERIAL_FLAG_BACKFACE_CULLING;
 				tile.material_flags |= MATERIAL_FLAG_CRACK_OVERLAY;
 
 				AtlasPointer ap = tile.texture;
+				AtlasPointer ap_top = tile_top.texture;
 
 				video::SColor c(255,255,255,255);
 
@@ -656,13 +652,13 @@ void mapblock_mesh_generate_special(MeshMakeData *data,
 				video::S3DVertex vertices_top[4] =
 				{
 					video::S3DVertex(BS/10,BS/10,-BS/10, 0,0,0, c,
-							ap.x0(), ap.y0()+0.0014),
+							ap_top.x0(), ap_top.y1()),
 					video::S3DVertex(BS/10,BS/10,BS/10, 0,0,0, c,
-							ap.x1(), ap.y0()+0.0014),
+							ap_top.x1(), ap_top.y1()),
 					video::S3DVertex(-BS/10,BS/10,BS/10, 0,0,0, c,
-							ap.x1(), ap.y0()),
+							ap_top.x1(), ap_top.y0()),
 					video::S3DVertex(-BS/10,BS/10,-BS/10, 0,0,0, c,
-							ap.x0(), ap.y0()),
+							ap_top.x0(), ap_top.y0()),
 				};
 
 				//BOTTOM

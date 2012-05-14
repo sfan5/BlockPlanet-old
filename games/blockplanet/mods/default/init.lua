@@ -1170,7 +1170,7 @@ minetest.register_node("default:lava_source", {
 minetest.register_node("default:torch", {
 	description = "Torch",
 	drawtype = "torchlike",
-	tile_images = {"default_torch.png"},
+	tile_images = {"default_torch.png", "default_torch_top.png"},
 	inventory_image = "default_torch_wield.png",
 	wield_image = "default_torch_wield.png",
 	paramtype = "light",
