@@ -1023,7 +1023,7 @@ minetest.register_node("default:rail", {
 	walkable = false,
 	selection_box = {
 		type = "fixed",
-		--fixed = <default>
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.45, 0.5},
 	},
 	groups = {bendy=2,snappy=1,dig_immediate=2},
 })
