@@ -24,8 +24,8 @@ minetest.register_node("mesecons_torch:mesecon_torch_off", {
 minetest.register_node("mesecons_torch:mesecon_torch_on", {
     drawtype = "torchlike",
     tile_images = {"jeija_torches_on.png", "jeija_torches_on_ceiling.png"},
-    inventory_image = "jeija_torches_on.png",
-    wield_image = "jeija_torches_on.png",
+    --inventory_image = "jeija_torches_on.png",
+    --wield_image = "jeija_torches_on.png",
     paramtype = "light",
     sunlight_propagates = true,
     walkable = false,
