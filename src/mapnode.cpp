@@ -107,7 +107,9 @@ u8 MapNode::getFaceDir(INodeDefManager *nodemgr) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
 	if(f.param_type_2 == CPT2_FACEDIR)
+	{
 		return getParam2() & 0x03;
+	}
 	return 0;
 }
 
@@ -115,7 +117,9 @@ u8 MapNode::getWallMounted(INodeDefManager *nodemgr) const
 {
 	const ContentFeatures &f = nodemgr->get(*this);
 	if(f.param_type_2 == CPT2_WALLMOUNTED)
+	{
 		return getParam2() & 0x07;
+	}
 	return 0;
 }
 
@@ -123,12 +127,12 @@ v3s16 MapNode::getWallMountedDir(INodeDefManager *nodemgr) const
 {
 	switch(getWallMounted(nodemgr))
 	{
-	case 0: default: return v3s16(0,1,0);
-	case 1: return v3s16(0,-1,0);
-	case 2: return v3s16(1,0,0);
-	case 3: return v3s16(-1,0,0);
-	case 4: return v3s16(0,0,1);
-	case 5: return v3s16(0,0,-1);
+		case 0: default: return v3s16(0,1,0);
+		case 1: return v3s16(0,-1,0);
+		case 2: return v3s16(1,0,0);
+		case 3: return v3s16(-1,0,0);
+		case 4: return v3s16(0,0,1);
+		case 5: return v3s16(0,0,-1);
 	}
 }
 

@@ -1021,6 +1021,85 @@ minetest.register_node("default:fence_wood", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
+minetest.register_node("default:gate_wood", {
+	description = "Wooden Gate",
+	drawtype = "signlike",
+	tile_images = {"default_fence.png"},
+	inventory_image = "default_fence.png",
+	wield_image = "default_fence.png",
+	paramtype = "light",
+	paramtype2 = "wallmounted",
+	is_ground_content = true,
+	walkable = true,
+	selection_box = {
+		type = "wallmounted"
+	},
+	groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2,flammable=2},
+	sounds = default.node_sound_wood_defaults(),
+})
+
+minetest.register_node_clone("default:gate_wood_o", "default:gate_wood", {
+	description = "Wooden Gate Open (you hacker!)",
+	walkable = false,
+	drop = "default:gate_wood",
+})
+
+local function round(n)
+	if (n >= 0) then
+		return math.floor(n + 0.5)
+	else
+		return math.ceil(n - 0.5)
+	end
+end
+
+minetest.register_on_placenode(function( pos, node, placer )
+	if (string.find(node.name, "default:gate_wood") ~= nil) then
+		dir = placer:get_look_dir()
+		if (round(dir.x) == 1)  then
+			newparam = 3
+		elseif (round(dir.x) == -1) then
+			newparam = 2
+		elseif (round(dir.z) == 1)  then
+			newparam = 5
+		elseif (round(dir.z) == -1) then
+			newparam = 4
+		end
+		minetest.env:add_node(pos,  {name = "default:gate_wood", param2 = newparam})
+	end
+end)
+
+minetest.register_on_punchnode(function(pos, node, puncher)
+	if (string.find(node.name, "default:gate_wood") ~= nil) then
+		newnode = 0
+		if (string.find(node.name, '_o', -2) == nil) then
+			if (node.param2 == 2) then
+				newparam = 5
+			elseif (node.param2 == 5) then
+				newparam = 3
+			elseif (node.param2 == 3) then
+				newparam = 4
+			elseif (node.param2 == 4) then
+				newparam = 2
+			end
+		else
+			if (node.param2 == 5) then
+				newparam = 2
+			elseif (node.param2 == 3) then
+				newparam = 5
+			elseif (node.param2 == 4) then
+				newparam = 3
+			elseif (node.param2 == 2) then
+				newparam = 4
+			end
+		end
+		if (node.name == "default:gate_wood") then
+			minetest.env:add_node(pos, {name = "default:gate_wood_o", param2 = newparam})
+		else
+			minetest.env:add_node(pos, {name = "default:gate_wood", param2 = newparam})
+		end
+	end
+end)
+
 minetest.register_node("default:rail", {
 	description = "Rail",
 	drawtype = "raillike",
